@@ -99,7 +99,7 @@ PG_PASSWORD
 
 **Clone the repo**
 ```shell script
-git clone [TODO: add link]
+git clone git@github.com:Alethio/memento.git
 cd memento
 ```
 
