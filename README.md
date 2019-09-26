@@ -26,6 +26,7 @@ Seamless integration with the [Ethereum Lite Explorer by Alethio](https://github
     - [`migrate`](#migrate)
     - [`reset`](#reset)
     - [`queue`](#queue)
+  - [API Documentation](https://github.com/Alethio/memento/wiki/API-documentation)
   - [How to](#how-to)
     - [Accessing the database directly when using docker-compose](#accessing-the-database-directly-when-using-docker-compose)
     - [Queueing a block when using Docker](#queueing-a-block-when-using-docker)
