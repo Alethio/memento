@@ -1,0 +1,75 @@
+# database fields
+db:
+  # Database host
+  host: "memento-postgres"
+
+  # Database port
+  port: 5432
+
+  # Database sslmode
+  sslmode: "disable"
+
+  # Database name
+  dbname: "memento"
+
+  # Database user (also allowed via PG_USER env var)
+  user: "memento"
+
+# ethereum-related fields
+eth:
+  client:
+    # HTTP endpoint of a web3-compatible node (mandatory)
+    http: "http://localhost:8545"
+
+    # Websockets endpoint of JSON-RPC enabled node (optional)
+    # if this is present, the task manager will use a newHeads subscription to watch for new blocks
+    # if not present, the task manager will use polling to get the highest block
+    ws: "ws://localhost:8546"
+
+    # The interval at which the task manager will poll the node for best block (default:"15s")
+    # optional, only used if `ws` url is not specified
+    poll-interval: "15s"
+
+# redis-related fields
+redis:
+  # URL of redis server (default:"localhost:6379")
+  server: "memento-redis:6379"
+
+  # The name of the redis list the scraper will use for task management (default: "todo")
+  list: "todo"
+
+# api-related fields
+api:
+  # The port on which the API will be exposed (default:3001)
+  port: 3001
+
+  # Enable/disable development CORS
+  dev-cors: true
+
+  # Allowed hosts for HTTP API development CORS
+  dev-cors-host: "*"
+
+# feature flags
+feature:
+  # Backfilling
+  backfill:
+    # Enable/disable the backfilling feature
+    enabled: false
+
+  # Lag feature
+  lag:
+    # Enable/disable the lag feature
+    enabled: true
+
+    # The amount of blocks to lag behind the tip of the chain if the lag feature is enabled
+    value: 10
+
+  # Automatic migrations
+  automigrate:
+    # Enable/disable the automatic migrations
+    enabled: true
+
+  # Uncles scraping
+  uncles:
+    # Enable/disabled the uncles scraping
+    enabled: true
