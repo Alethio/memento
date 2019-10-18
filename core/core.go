@@ -154,6 +154,7 @@ func (c *Core) Run() {
 				if err1 != nil {
 					log.Fatal(err1)
 				}
+				time.Sleep(2 * time.Second)
 				continue
 			}
 
