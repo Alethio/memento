@@ -22,9 +22,11 @@ type Tracker struct {
 	mu              sync.Mutex
 	errChan         chan error
 	stopChan        chan bool
-	started         bool
-	stopped         bool
 	conn            *ethrpc.ETH
+
+	started    bool
+	stopped    bool
+	subscribed bool
 
 	subscribers map[chan int64]bool
 	subsMutex   sync.RWMutex
@@ -33,23 +35,10 @@ type Tracker struct {
 // NewTracker instantiates a new best block tracker with the config provided by the user
 // You should call `Run()` to actually start the process
 func NewTracker(config Config) (*Tracker, error) {
-	var conn *ethrpc.ETH
-	var err error
-	if config.NodeURLWS != "" {
-		conn, err = ethrpc.NewWithDefaults(config.NodeURLWS)
-	} else {
-		conn, err = ethrpc.NewWithDefaults(config.NodeURL)
-	}
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-
 	return &Tracker{
 		config:      config,
 		errChan:     make(chan error),
 		stopChan:    make(chan bool),
-		conn:        conn,
 		subscribers: make(map[chan int64]bool),
 	}, nil
 }
@@ -60,12 +49,44 @@ func NewTracker(config Config) (*Tracker, error) {
 func (b *Tracker) Run() {
 	log.Info("starting best block tracker")
 
-	b.getBlockNumber()
+	for {
+		log.Info("setting up websocket connection")
 
-	if b.config.NodeURLWS != "" {
-		b.runWS()
-	} else {
-		b.runHTTP()
+		var conn *ethrpc.ETH
+		var err error
+
+		if b.config.NodeURLWS != "" {
+			conn, err = ethrpc.NewWithDefaults(b.config.NodeURLWS)
+		} else {
+			conn, err = ethrpc.NewWithDefaults(b.config.NodeURL)
+		}
+		if err != nil {
+			log.Error(err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+
+		b.conn = conn
+
+		if b.started {
+			// this happens if, for example, the connection with the node breaks mid-flight
+			// we do this to avoid gaps (blocks lost while the connection was down)
+			b.getBestHTTP()
+		} else {
+			// if we're starting the tracker for the first time, we just have to get the current best block and publish it
+			b.getBlockNumber()
+			b.publish(b.BestBlock())
+		}
+
+		if b.config.NodeURLWS != "" {
+			b.runWS()
+		} else {
+			b.runHTTP()
+		}
+
+		if b.stopped {
+			return
+		}
 	}
 }
 
@@ -110,5 +131,7 @@ func (b *Tracker) Err() chan error {
 
 // Close stops the tracker
 func (b *Tracker) Close() {
-	b.stopChan <- true
+	if b.subscribed {
+		b.stopChan <- true
+	}
 }

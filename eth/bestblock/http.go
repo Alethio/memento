@@ -7,20 +7,20 @@ func (b *Tracker) runHTTP() {
 	for {
 		select {
 		case <-time.Tick(b.config.PollInterval):
-			old := b.BestBlock()
-			b.getBlockNumber()
-
-			newBlock := b.BestBlock()
-			if old < newBlock {
-				for i := old + 1; i <= newBlock; i++ {
-					b.publish(i)
-				}
-			} else {
-				b.publish(newBlock)
-			}
-
+			b.getBestHTTP()
 		case <-b.stopChan:
 			return
 		}
+	}
+}
+
+// getBestHTTP checks the current best block and publishes events for all the blocks between the previous and the new best block
+func (b *Tracker) getBestHTTP() {
+	oldBest := b.BestBlock()
+	b.getBlockNumber()
+	newBest := b.BestBlock()
+
+	for i := oldBest + 1; i <= newBest; i++ {
+		b.publish(i)
 	}
 }

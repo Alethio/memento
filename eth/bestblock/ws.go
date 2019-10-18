@@ -9,28 +9,28 @@ import (
 
 // runWS uses a websocket subscription to get new block headers as soon as they appear
 func (b *Tracker) runWS() {
-	for {
-		heads, err := b.conn.NewHeadsSubscription()
-		if err != nil {
-			log.Error(err)
-			time.Sleep(5 * time.Second)
-			continue
-		}
-
-		b.consumeWSSubscription(heads)
-
-		if b.stopped {
-			return
-		}
-
-		log.Warn("WS connection closed;")
+	heads, err := b.conn.NewHeadsSubscription()
+	if err != nil {
+		log.Error(err)
 		time.Sleep(5 * time.Second)
+		return
 	}
+
+	b.consumeWSSubscription(heads)
+
+	if b.stopped {
+		return
+	}
+
+	log.Warn("WS connection closed")
 }
 
 // consumeWSSubscription consumes a block headers stream coming from the websocket subscription until the channel is closed
 // and saves the new blocks in the dedicated variable on the Tracker struct
 func (b *Tracker) consumeWSSubscription(blocks chan *types.BlockHeader) {
+	b.subscribed = true
+	defer func() { b.subscribed = false }()
+
 	for {
 		select {
 		case block := <-blocks:
