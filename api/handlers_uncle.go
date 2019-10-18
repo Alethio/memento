@@ -3,8 +3,8 @@ package api
 import (
 	"database/sql"
 
-	"git.aleth.io/alethio/memento/api/types"
-	"git.aleth.io/alethio/memento/utils"
+	"github.com/Alethio/memento/api/types"
+	"github.com/Alethio/memento/utils"
 	"github.com/gin-gonic/gin"
 )
 

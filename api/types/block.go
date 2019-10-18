@@ -1,6 +1,6 @@
 package types
 
-import "git.aleth.io/alethio/memento/data/storable"
+import "github.com/Alethio/memento/data/storable"
 
 type Block struct {
 	Number               int64                       `json:"number"`

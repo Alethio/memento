@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"git.aleth.io/alethio/memento/commands"
+	"github.com/Alethio/memento/commands"
 )
 
 var (

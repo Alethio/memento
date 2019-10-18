@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"git.aleth.io/alethio/memento/api/types"
+	"github.com/Alethio/memento/api/types"
 
-	"git.aleth.io/alethio/memento/data/storable"
+	"github.com/Alethio/memento/data/storable"
 
 	"github.com/gin-gonic/gin"
 )

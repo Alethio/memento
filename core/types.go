@@ -1,10 +1,10 @@
 package core
 
 import (
-	"git.aleth.io/alethio/memento/api"
-	"git.aleth.io/alethio/memento/eth/bestblock"
-	"git.aleth.io/alethio/memento/scraper"
-	"git.aleth.io/alethio/memento/taskmanager"
+	"github.com/Alethio/memento/api"
+	"github.com/Alethio/memento/eth/bestblock"
+	"github.com/Alethio/memento/scraper"
+	"github.com/Alethio/memento/taskmanager"
 )
 
 type Features struct {

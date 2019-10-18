@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"strconv"
 
-	"git.aleth.io/alethio/memento/data/storable"
+	"github.com/Alethio/memento/data/storable"
 )
 
 // extractBlockNumber returns the block number as int64 by extracting it from the raw data

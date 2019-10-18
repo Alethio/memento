@@ -3,7 +3,7 @@ package data
 import (
 	"database/sql"
 
-	"git.aleth.io/alethio/memento/data/storable"
+	"github.com/Alethio/memento/data/storable"
 	"github.com/sirupsen/logrus"
 
 	"github.com/alethio/web3-go/types"

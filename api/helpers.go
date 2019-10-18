@@ -1,8 +1,8 @@
 package api
 
 import (
-	"git.aleth.io/alethio/memento/api/types"
-	"git.aleth.io/alethio/memento/data/storable"
+	"github.com/Alethio/memento/api/types"
+	"github.com/Alethio/memento/data/storable"
 )
 
 func (a *API) getBlockTxs(number int64) ([]types.Tx, error) {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"git.aleth.io/alethio/memento/eth/bestblock"
+	"github.com/Alethio/memento/eth/bestblock"
 	"github.com/go-redis/redis"
 )
 

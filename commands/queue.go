@@ -3,7 +3,7 @@ package commands
 import (
 	"time"
 
-	_ "git.aleth.io/alethio/memento/migrations"
+	_ "github.com/Alethio/memento/migrations"
 	"github.com/go-redis/redis"
 	_ "github.com/lib/pq"
 	"github.com/spf13/cobra"

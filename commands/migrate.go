@@ -3,7 +3,7 @@ package commands
 import (
 	"database/sql"
 
-	_ "git.aleth.io/alethio/memento/migrations"
+	_ "github.com/Alethio/memento/migrations"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose"
 	"github.com/spf13/cobra"

@@ -7,14 +7,14 @@ import (
 
 	"github.com/pressly/goose"
 
-	"git.aleth.io/alethio/memento/api"
+	"github.com/Alethio/memento/api"
 
 	"github.com/alethio/web3-go/validator"
 
-	"git.aleth.io/alethio/memento/scraper"
-	"git.aleth.io/alethio/memento/taskmanager"
+	"github.com/Alethio/memento/scraper"
+	"github.com/Alethio/memento/taskmanager"
 
-	"git.aleth.io/alethio/memento/eth/bestblock"
+	"github.com/Alethio/memento/eth/bestblock"
 	"github.com/sirupsen/logrus"
 )
 

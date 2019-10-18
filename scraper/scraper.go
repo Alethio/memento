@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"git.aleth.io/alethio/memento/data"
+	"github.com/Alethio/memento/data"
 
 	"github.com/alethio/web3-go/ethrpc"
 	"github.com/sirupsen/logrus"
