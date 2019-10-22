@@ -1,17 +1,29 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-contrib/static"
+
+	"github.com/gin-gonic/gin"
+)
 
 func (a *API) setRoutes() {
-	http := a.engine.Group("/api")
-	http.GET("/block/:block", a.BlockHandler)
-	http.GET("/block-range/:start/:end", a.BlockRangeHandler)
-	http.GET("/uncle/:hash", a.UncleDetailsHandler)
-	http.GET("/tx/:txHash", a.TxDetailsHandler)
-	http.GET("/tx/:txHash/log-entries", a.TxLogEntriesHandler)
-	http.GET("/account/:address/txs", a.AccountTxsHandler)
+	explorer := a.engine.Group("/explorer")
+	explorer.GET("/block/:block", a.BlockHandler)
+	explorer.GET("/block-range/:start/:end", a.BlockRangeHandler)
+	explorer.GET("/uncle/:hash", a.UncleDetailsHandler)
+	explorer.GET("/tx/:txHash", a.TxDetailsHandler)
+	explorer.GET("/tx/:txHash/log-entries", a.TxLogEntriesHandler)
+	explorer.GET("/account/:address/txs", a.AccountTxsHandler)
+
+	a.engine.LoadHTMLGlob("web/templates/*")
+
+	a.engine.Use(static.Serve("/web/assets", static.LocalFile("web/assets", false)))
 
 	a.engine.GET("/", func(ctx *gin.Context) {
-		ctx.String(200, "It works!")
+		ctx.HTML(http.StatusOK, "index.html", gin.H{
+			"title": "Main website",
+		})
 	})
 }
