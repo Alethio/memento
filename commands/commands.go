@@ -83,6 +83,9 @@ var (
 
 func init() {
 	cobra.OnInitialize(initLogging)
+	cobra.OnInitialize(func() {
+		viper.Set("version", RootCmd.Version)
+	})
 	viper.AutomaticEnv()
 
 	// persistent flags

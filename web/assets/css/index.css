@@ -23,12 +23,32 @@ button {
     outline: none !important;
 }
 
-.text-custom-blue-900 {
-    color: #273556;
+.text-blue-500 {
+    color: #004aff !important;
+}
+
+.text-blue-900 {
+    color: #273556 !important;
+}
+
+.text-grey-500 {
+    color: #d0def2 !important;
+}
+
+.text-grey-600 {
+    color: #a7b5d1 !important;
+}
+
+.bg-blue-500 {
+    background-color: #004aff !important;
+}
+
+.border-grey-500 {
+    border-color: #d0def2 !important;
 }
 
 .shadow {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.04) !important;
+    box-shadow: 0 8px 16px -5px rgba(203, 212, 226, 0.25) !important;
 }
 
 .shadow-md {
@@ -41,4 +61,22 @@ button {
 
 .shadow-xl {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, .08), 0 10px 10px -5px rgba(0, 0, 0, .04) !important;
+}
+
+.block-shadow {
+    box-shadow: 0 8px 16px 0 rgba(0, 74, 255, 0.22);
+}
+
+.rounded-xl {
+    border-radius: 12px;
+}
+
+@media (min-width: 1024px) {
+    .no-outer-margin > div:first-child > div {
+        margin-left: 0;
+    }
+
+    .no-outer-margin > div:last-child > div {
+        margin-right: 0;
+    }
 }

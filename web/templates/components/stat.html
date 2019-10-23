@@ -1,0 +1,17 @@
+{{ define "stat" }}
+    <div class="w-full sm:w-1/2 lg:w-1/4">
+        <div class="py-2 sm:py-0 sm:m-4">
+            <div class="py-2 sm:py-0 bg-white w-full rounded-xl flex">
+                <div class="flex items-center px-4" role="icon">
+                    <div class="flex items-center justify-center w-10 h-10 bg-{{ .Color }}-100 rounded-xl">
+                        <span class="mdi mdi-{{ .Icon }} text-{{ .Color }}-600 text-2xl"></span>
+                    </div>
+                </div>
+                <div class="py-2 sm:py-4 flex w-full flex-col">
+                    <p class="text-blue-900 font-bold text-2xl" style="line-height: 26px">{{ .Value }}</p>
+                    <p class="text-grey-600 text-xs" style="line-height: 14px">{{ .Name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{{ end }}

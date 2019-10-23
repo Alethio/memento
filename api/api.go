@@ -3,6 +3,8 @@ package api
 import (
 	"database/sql"
 
+	"github.com/Alethio/memento/metrics"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -17,15 +19,17 @@ type Config struct {
 }
 
 type API struct {
-	config Config
-	engine *gin.Engine
-	db     *sql.DB
+	config  Config
+	engine  *gin.Engine
+	db      *sql.DB
+	metrics *metrics.Metrics
 }
 
-func New(db *sql.DB, config Config) *API {
+func New(db *sql.DB, metrics *metrics.Metrics, config Config) *API {
 	return &API{
-		config: config,
-		db:     db,
+		config:  config,
+		db:      db,
+		metrics: metrics,
 	}
 }
 

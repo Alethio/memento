@@ -5,6 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Alethio/memento/metrics"
+
 	"github.com/pressly/goose"
 
 	"github.com/Alethio/memento/api"
@@ -23,6 +25,7 @@ var log = logrus.WithField("module", "core")
 type Core struct {
 	config Config
 
+	metrics     *metrics.Metrics
 	bbtracker   *bestblock.Tracker
 	taskmanager *taskmanager.Manager
 	scraper     *scraper.Scraper
@@ -33,6 +36,8 @@ type Core struct {
 }
 
 func New(config Config) *Core {
+	m := metrics.New()
+
 	bbtracker, err := bestblock.NewTracker(config.BestBlockTracker)
 	if err != nil {
 		log.Fatal("could not start best block tracker")
@@ -52,12 +57,19 @@ func New(config Config) *Core {
 		}
 	}()
 
+	go func() {
+		m.RecordLatestBlock(bbtracker.BestBlock())
+		for b := range bbtracker.Subscribe() {
+			m.RecordLatestBlock(b)
+		}
+	}()
+
 	var lag int64
 	if config.Features.Lag.Enabled {
 		lag = config.Features.Lag.Value
 	}
 
-	tm, err := taskmanager.New(bbtracker, lag, config.TaskManager)
+	tm, err := taskmanager.New(bbtracker, lag, m, config.TaskManager)
 	if err != nil {
 		log.Fatal("could not start task manager")
 	}
@@ -89,10 +101,11 @@ func New(config Config) *Core {
 
 	log.Info("connected to postgres successfuly")
 
-	a := api.New(db, config.API)
+	a := api.New(db, m, config.API)
 
 	return &Core{
 		config:      config,
+		metrics:     m,
 		bbtracker:   bbtracker,
 		taskmanager: tm,
 		scraper:     s,
@@ -158,6 +171,8 @@ func (c *Core) Run() {
 				continue
 			}
 
+			c.metrics.RecordScrapingTime(time.Since(start))
+
 			log.Debug("validating block")
 			v := validator.New()
 			v.LoadBlock(blk.Block)
@@ -167,6 +182,7 @@ func (c *Core) Run() {
 			_, err = v.Run()
 			if err != nil {
 				c.stopMu.Unlock()
+				c.metrics.RecordInvalidBlock()
 				log.Error("error validating block: ", err)
 				err1 := c.taskmanager.Todo(b)
 				if err1 != nil {
@@ -177,8 +193,10 @@ func (c *Core) Run() {
 			log.Debug("block is valid")
 
 			log.Debug("storing block into the database")
+
+			indexingStart := time.Now()
 			blk.RegisterStorables()
-			err = blk.Store(c.db)
+			err = blk.Store(c.db, c.metrics)
 			if err != nil {
 				c.stopMu.Unlock()
 				log.Error("error storing block: ", err)
@@ -188,6 +206,8 @@ func (c *Core) Run() {
 				}
 				continue
 			}
+			c.metrics.RecordIndexingTime(time.Since(indexingStart))
+			c.metrics.RecordProcessingTime(time.Since(start))
 			log.WithField("duration", time.Since(start)).Info("done processing block")
 			c.stopMu.Unlock()
 		}

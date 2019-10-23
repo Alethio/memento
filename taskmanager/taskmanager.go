@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Alethio/memento/metrics"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/Alethio/memento/eth/bestblock"
@@ -22,6 +24,7 @@ type Manager struct {
 	config Config
 	lag    int64
 
+	metrics *metrics.Metrics
 	tracker *bestblock.Tracker
 	redis   *redis.Client
 
@@ -31,10 +34,11 @@ type Manager struct {
 
 // New instantiates a new task manager and also takes care of the redis connection management
 // it subscribes to the best block tracker for new blocks which it'll add to the redis queue automatically
-func New(tracker *bestblock.Tracker, lag int64, config Config) (*Manager, error) {
+func New(tracker *bestblock.Tracker, lag int64, metrics *metrics.Metrics, config Config) (*Manager, error) {
 	m := &Manager{
 		config:   config,
 		lag:      lag,
+		metrics:  metrics,
 		tracker:  tracker,
 		closed:   false,
 		stopChan: make(chan bool),
@@ -77,6 +81,13 @@ func (m *Manager) FeedToChan(c chan int64) {
 				<-m.stopChan
 			}
 			return
+		}
+
+		todoLen, err := m.redis.ZCard(m.config.TodoList).Result()
+		if err != nil {
+			log.Error(err)
+		} else {
+			m.metrics.RecordTodoLength(todoLen)
 		}
 
 		doneChan := make(chan bool)
