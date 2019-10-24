@@ -13,5 +13,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo .
 
 FROM scratch
 COPY --from=build /memento/memento .
+COPY --from=build /memento/web ./web
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 CMD ["./memento", "run", "--config=/config/config.yml"]
