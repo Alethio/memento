@@ -23,6 +23,14 @@ button {
     color: #004aff !important;
 }
 
+.hover\:text-blue-500:hover {
+    color: #004aff !important;
+}
+
+.hover\:text-blue-900:hover {
+    color: #273556 !important;
+}
+
 .text-blue-900 {
     color: #273556 !important;
 }
@@ -79,4 +87,27 @@ button {
     .no-outer-margin > div:last-child > div {
         margin-right: 0;
     }
+}
+
+.menu-item > .floating-label {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms;
+}
+
+.menu-item:hover > .floating-label {
+    opacity: 1;
+}
+
+.caret {
+    left: -6px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 6px 6px 0;
+    border-color: transparent #273556 transparent transparent;
+}
+
+.caret.caret-red-700 {
+    border-color: transparent #c53030 transparent transparent;
 }

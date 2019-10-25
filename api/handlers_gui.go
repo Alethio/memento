@@ -33,8 +33,35 @@ func (a *API) GUIIndexHandler(c *gin.Context) {
 	})
 }
 
-func (a *API) GUISettingsHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "settings", gin.H{
+func (a *API) GUIQueueHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "queue", gin.H{
+		"nav": types.Nav{
+			Latest:  a.metrics.GetLatestBLock(),
+			Version: viper.GetString("version"),
+		},
+	})
+}
+
+func (a *API) GUIPauseHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "pause", gin.H{
+		"nav": types.Nav{
+			Latest:  a.metrics.GetLatestBLock(),
+			Version: viper.GetString("version"),
+		},
+	})
+}
+
+func (a *API) GUIConfigHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "config", gin.H{
+		"nav": types.Nav{
+			Latest:  a.metrics.GetLatestBLock(),
+			Version: viper.GetString("version"),
+		},
+	})
+}
+
+func (a *API) GUIResetHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "reset", gin.H{
 		"nav": types.Nav{
 			Latest:  a.metrics.GetLatestBLock(),
 			Version: viper.GetString("version"),

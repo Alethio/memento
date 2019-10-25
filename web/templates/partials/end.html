@@ -7,6 +7,17 @@
                 clearInterval(i)
             }
         }, 500)
+
+        var els = document.querySelectorAll("nav>ul>li>a[href='"+window.location.pathname+"']")[0];
+        els.classList.add("bg-gray-200")
+
+        if (els.classList.contains("text-red-500")) {
+            els.classList.remove("text-red-500")
+            els.classList.add("text-red-900")
+        } else {
+            els.classList.remove("text-grey-500")
+            els.classList.add("text-blue-900")
+        }
     </script>
     </body>
     </html>

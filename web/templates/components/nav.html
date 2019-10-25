@@ -1,25 +1,28 @@
 {{ define "nav" }}
-    <nav class="fixed top-0 w-full flex items-center bg-white h-20 sm:h-24 z-30 shadow">
-        <div class="container px-4 flex justify-between mx-auto relative">
-            <div class="flex items-center">
-                <a href="/" class="flex items-center py-4">
-                    <img src="/web/assets/images/logo.svg" class="w-8 mr-2" alt="logo"/>
-                    <p class="logo-text text-lg font-bold text-blue-900 mr-2">memento</p>
-                    <p class="logo-text text-xs font-bold text-grey-500">{{ .Version }}</p>
-                </a>
-            </div>
-            <div class="flex items-center">
-                <ul class="flex items-center">
-                    <li class="flex items-center mr-4 sm:mr-8">
-                        {{ template "label" "Latest block"}}
-                        {{ template "block" .Latest }}
-                    </li>
-                    <li class="mr-2 sm:mr-6 h-6 border-r" role="separator"></li>
-                    <li class="text-2xl text-grey-600">
-                        <a href="/settings"><span class="mdi mdi-settings p-2 cursor-pointer"></span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <nav class="fixed top-0 left-0 w-20 h-screen flex flex-col items-center justify-between bg-white z-30 shadow">
+        <a href="/" class="flex justify-center w-full px-4 py-6">
+            <img src="/web/assets/images/logo.svg" class="w-10" alt="logo"/>
+        </a>
+        <ul class="flex flex-col text-2xl w-full">
+            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/" "Icon" "home" "Name" "Home"}}
+            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/queue" "Icon" "clipboard-list-outline" "Name" "Queue blocks"}}
+            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/pause" "Icon" "play-pause" "Name" "Start/stop"}}
+            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/config"  "Icon" "file-settings-variant" "Name" "Configuration"}}
+        </ul>
+        <ul class="flex flex-col text-2xl w-full">
+            {{ template "nav-item" dict "Color" "text-red-500" "Hover" "red-700" "Href" "/reset"  "Icon" "restart" "Name" "Reset"}}
+        </ul>
     </nav>
+{{ end }}
+
+{{ define "nav-item" }}
+    <li class="w-full flex items-center">
+        <a href="{{ .Href }}" class="w-full m-4 rounded-xl flex items-center justify-center hover:bg-gray-200 hover:text-{{ .Hover }} transition {{ .Color }} menu-item">
+            <span class="mdi mdi-{{ .Icon }} py-2"></span>
+            <div class="px-4 py-2 absolute whitespace-no-wrap bg-{{ .Hover }} text-white shadow text-sm rounded-lg floating-label flex items-center" style="left: 96px;">
+                <span class="caret absolute caret-{{ .Hover }}"></span>
+                {{ .Name }}
+            </div>
+        </a>
+    </li>
 {{ end }}
