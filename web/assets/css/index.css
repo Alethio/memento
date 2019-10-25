@@ -15,10 +15,6 @@ body {
     transition: 0.5s;
 }
 
-.bg-white-opacity-90 {
-    background-color: rgb(255, 255, 255, 0.9);
-}
-
 button {
     outline: none !important;
 }
@@ -29,6 +25,10 @@ button {
 
 .text-blue-900 {
     color: #273556 !important;
+}
+
+.bg-blue-900 {
+    background-color: #273556 !important;
 }
 
 .text-grey-500 {

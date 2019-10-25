@@ -1,0 +1,25 @@
+{{ define "nav" }}
+    <nav class="fixed top-0 w-full flex items-center bg-white h-20 sm:h-24 z-30 shadow">
+        <div class="container px-4 flex justify-between mx-auto relative">
+            <div class="flex items-center">
+                <a href="/" class="flex items-center py-4">
+                    <img src="/web/assets/images/logo.svg" class="w-8 mr-2" alt="logo"/>
+                    <p class="logo-text text-lg font-bold text-blue-900 mr-2">memento</p>
+                    <p class="logo-text text-xs font-bold text-grey-500">{{ .Version }}</p>
+                </a>
+            </div>
+            <div class="flex items-center">
+                <ul class="flex items-center">
+                    <li class="flex items-center mr-4 sm:mr-8">
+                        {{ template "label" "Latest block"}}
+                        {{ template "block" .Latest }}
+                    </li>
+                    <li class="mr-2 sm:mr-6 h-6 border-r" role="separator"></li>
+                    <li class="text-2xl text-grey-600">
+                        <a href="/settings"><span class="mdi mdi-settings p-2 cursor-pointer"></span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{{ end }}

@@ -22,3 +22,8 @@ type ProcStats struct {
 type TimingStats struct {
 	ProcessingTime, ScrapingTime, IndexingTime Stat
 }
+
+type Nav struct {
+	Latest  int64
+	Version string
+}

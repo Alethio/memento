@@ -85,7 +85,7 @@ func (a *API) getDBStats() (types.DBStats, error) {
 						pg_indexes_size(table_name)        as indexes_size,
 						pg_total_relation_size(table_name) as total_size
 				 from (
-						  select table_name
+						  select table_name::text
 						  from information_schema.tables
 						  where table_schema = 'public'
 					  ) as all_tables

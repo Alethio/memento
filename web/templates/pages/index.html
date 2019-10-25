@@ -1,90 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="theme-color" content="#ffffff">
-    <title>memento</title>
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Barlow:600,700,800|Montserrat:700&display=swap" rel="stylesheet">
-    <link href="https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="/web/assets/css/index.css" rel="stylesheet"/>
-</head>
-<body>
+{{ define "index" }}
+    {{ template "start" .nav }}
 
-<div style="position:fixed; width: 100vw; height: 100vh; background-color: #fff; z-index: 50; top: 0; left: 0; display: flex; justify-content: center; align-items: center; transition: all 0.5s;" id="splash">
-    <img src="/web/assets/images/logo.svg" style="width: 128px;" alt="logo"/>
-</div>
-
-
-<nav class="fixed top-0 w-full flex items-center bg-white h-20 sm:h-24 z-30 shadow">
-    <div class="container px-4 flex justify-between mx-auto relative">
-        <div class="flex items-center">
-            <img src="/web/assets/images/logo.svg" class="w-8 mr-2" alt="logo"/>
-            <p class="logo-text text-lg font-bold text-blue-900 mr-2">memento</p>
-            <p class="logo-text text-xs font-bold text-grey-500">{{ .version }}</p>
+    <div class="container px-4 pb-8 mt-20 sm:mt-24 mx-auto">
+        <div class="flex flex-col pt-6 sm:pt-10">
+            <h2 class="font-semibold text-sm uppercase text-grey-600">Indexed entities</h2>
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+                {{ template "stat" .dbEntries.Blocks }}
+                {{ template "stat" .dbEntries.Txs }}
+                {{ template "stat" .dbEntries.LogEntries }}
+                {{ template "stat" .dbEntries.Uncles }}
+            </div>
         </div>
-        <div class="flex items-center">
-            <ul class="flex items-center">
-                <li class="flex items-center">
-                    {{ template "label" "Latest block"}}
-                    {{ template "block" . }}
-                </li>
-            </ul>
+        <div class="flex flex-col pt-6 sm:pt-10">
+            <h2 class="font-semibold text-sm uppercase text-grey-600">General</h2>
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+                {{ template "stat" .dbStats.MaxBlock }}
+                {{ template "stat" .procStats.TodoLength }}
+                {{ template "stat" .procStats.ReorgedBlocks }}
+                {{ template "stat" .procStats.InvalidBlocks }}
+            </div>
         </div>
-    </div>
-</nav>
-
-<div class="container px-4 pb-8 mt-20 sm:mt-24 mx-auto">
-    <div class="flex flex-col pt-6 sm:pt-10">
-        <h2 class="font-semibold text-sm uppercase text-grey-600">Indexed entities</h2>
-        <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
-            {{ template "stat" .dbEntries.Blocks }}
-            {{ template "stat" .dbEntries.Txs }}
-            {{ template "stat" .dbEntries.LogEntries }}
-            {{ template "stat" .dbEntries.Uncles }}
+        <div class="flex flex-col pt-6 sm:pt-10">
+            <h2 class="font-semibold text-sm uppercase text-grey-600">Processing</h2>
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+                {{ template "stat" .timingStats.ScrapingTime }}
+                {{ template "stat" .timingStats.IndexingTime }}
+                {{ template "stat" .timingStats.ProcessingTime }}
+                {{ template "stat" .procStats.MemoryUsage }}
+            </div>
+        </div>
+        <div class="flex flex-col pt-6 sm:pt-10">
+            <h2 class="font-semibold text-sm uppercase text-grey-600">Database</h2>
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+                {{ template "stat" .dbStats.DataSize }}
+                {{ template "stat" .dbStats.IndexesSize }}
+                {{ template "stat" .dbStats.TotalSize }}
+                {{ template "stat" .dbStats.MigrationsVersion }}
+            </div>
         </div>
     </div>
-    <div class="flex flex-col pt-6 sm:pt-10">
-        <h2 class="font-semibold text-sm uppercase text-grey-600">General</h2>
-        <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
-            {{ template "stat" .dbStats.MaxBlock }}
-            {{ template "stat" .procStats.TodoLength }}
-            {{ template "stat" .procStats.ReorgedBlocks }}
-            {{ template "stat" .procStats.InvalidBlocks }}
-        </div>
-    </div>
-    <div class="flex flex-col pt-6 sm:pt-10">
-        <h2 class="font-semibold text-sm uppercase text-grey-600">Processing</h2>
-        <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
-            {{ template "stat" .timingStats.ScrapingTime }}
-            {{ template "stat" .timingStats.IndexingTime }}
-            {{ template "stat" .timingStats.ProcessingTime }}
-            {{ template "stat" .procStats.MemoryUsage }}
-        </div>
-    </div>
-    <div class="flex flex-col pt-6 sm:pt-10">
-        <h2 class="font-semibold text-sm uppercase text-grey-600">Database</h2>
-        <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
-            {{ template "stat" .dbStats.DataSize }}
-            {{ template "stat" .dbStats.IndexesSize }}
-            {{ template "stat" .dbStats.TotalSize }}
-            {{ template "stat" .dbStats.MigrationsVersion }}
-        </div>
-    </div>
-</div>
 
-
-<script>
-    i = setInterval(function() {
-        if (document.getElementsByClassName("mdi").item(0).offsetWidth !== 0) {
-            document.getElementById("splash").style.opacity = "0"
-            document.getElementById("splash").style.pointerEvents = "none"
-            clearInterval(i)
-        }
-    }, 500)
-</script>
-</body>
-</html>
+    {{ template "end" }}
+{{ end }}

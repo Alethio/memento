@@ -16,4 +16,5 @@ func (a *API) setRoutes() {
 	a.engine.LoadHTMLGlob("web/templates/**/*")
 	a.engine.Use(static.Serve("/web/assets", static.LocalFile("web/assets", false)))
 	a.engine.GET("/", a.GUIIndexHandler)
+	a.engine.GET("/settings", a.GUISettingsHandler)
 }

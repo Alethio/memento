@@ -1,0 +1,38 @@
+{{ define "settings" }}
+    {{ template "start" .nav }}
+
+    <div class="container px-4 pb-8 mt-20 sm:mt-24 mx-auto">
+        <div class="flex">
+            <div class="w-full lg:w-1/6 mt-8 p-2 bg-white rounded-xl shadow">
+                <ul class="flex flex-col">
+                    <li class="flex">
+                        <a href="#" class="w-full text-blue-900 flex items-center">
+                            <span class="mdi mdi-clipboard-list-outline text-2xl p-4"></span>
+                            Queue blocks
+                        </a>
+                    </li>
+                    <li class="flex">
+                        <a href="#" class="w-full text-blue-900 flex items-center">
+                            <span class="mdi mdi-play-pause text-2xl p-4"></span>
+                            Start/pause
+                        </a>
+                    </li>
+                    <li class="flex">
+                        <a href="#" class="w-full text-blue-900 flex items-center">
+                            <span class="mdi mdi-restart text-2xl p-4"></span>
+                            Reset database
+                        </a>
+                    </li>
+                    <li class="flex">
+                        <a href="#" class="w-full text-blue-900 flex items-center">
+                            <span class="mdi mdi-file-settings-variant text-2xl p-4"></span>
+                            Configuration
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {{ template "end" }}
+{{ end }}
