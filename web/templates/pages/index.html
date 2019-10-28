@@ -3,15 +3,6 @@
 
     <div class="container pl-32 pr-12 mx-auto">
         <div class="flex flex-col pt-6 sm:pt-10">
-            <h2 class="font-semibold text-sm uppercase text-grey-600">Indexed entities</h2>
-            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
-                {{ template "stat" .dbEntries.Blocks }}
-                {{ template "stat" .dbEntries.Txs }}
-                {{ template "stat" .dbEntries.LogEntries }}
-                {{ template "stat" .dbEntries.Uncles }}
-            </div>
-        </div>
-        <div class="flex flex-col pt-6 sm:pt-10">
             <h2 class="font-semibold text-sm uppercase text-grey-600">General</h2>
             <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
                 {{ template "stat" .dbStats.MaxBlock }}
@@ -27,6 +18,15 @@
                 {{ template "stat" .timingStats.IndexingTime }}
                 {{ template "stat" .timingStats.ProcessingTime }}
                 {{ template "stat" .procStats.MemoryUsage }}
+            </div>
+        </div>
+        <div class="flex flex-col pt-6 sm:pt-10">
+            <h2 class="font-semibold text-sm uppercase text-grey-600">Indexed entities</h2>
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+                {{ template "stat" .dbEntries.Blocks }}
+                {{ template "stat" .dbEntries.Txs }}
+                {{ template "stat" .dbEntries.LogEntries }}
+                {{ template "stat" .dbEntries.Uncles }}
             </div>
         </div>
         <div class="flex flex-col pt-6 sm:pt-10">
