@@ -15,7 +15,7 @@ body {
     transition: 0.5s;
 }
 
-button {
+button,input {
     outline: none !important;
 }
 
@@ -53,6 +53,22 @@ button {
 
 .border-grey-500 {
     border-color: #d0def2 !important;
+}
+
+.border-blue-500 {
+    border-color: #004aff !important;
+}
+
+.hover\:border-blue-500:hover {
+    border-color: #004aff !important;
+}
+
+.focus\:border-blue-500:focus {
+    border-color: #004aff !important;
+}
+
+.hover\:bg-white:hover {
+    background-color: #ffffff !important;
 }
 
 .shadow {

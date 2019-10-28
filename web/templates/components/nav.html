@@ -13,6 +13,10 @@
             {{ template "nav-item" dict "Color" "text-red-500" "Hover" "red-700" "Href" "/reset"  "Icon" "restart" "Name" "Reset"}}
         </ul>
     </nav>
+    <div class="fixed bottom-0 right-0 bg-white px-4 py-2 flex items-center rounded-xl mb-8 mr-8">
+        {{ template "label" "Latest block"}}
+        {{ template "block" .Latest }}
+    </div>
 {{ end }}
 
 {{ define "nav-item" }}

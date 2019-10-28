@@ -101,7 +101,7 @@ func New(config Config) *Core {
 
 	log.Info("connected to postgres successfuly")
 
-	a := api.New(db, m, config.API)
+	a := api.New(db, m, tm, config.API)
 
 	return &Core{
 		config:      config,

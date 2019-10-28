@@ -23,6 +23,7 @@ func (a *API) setRoutes() {
 	a.engine.Use(static.Serve("/web/assets", static.LocalFile("web/assets", false)))
 	a.engine.GET("/", a.GUIIndexHandler)
 	a.engine.GET("/queue", a.GUIQueueHandler)
+	a.engine.POST("/queue", a.GUIQueuePostHandler)
 	a.engine.GET("/pause", a.GUIPauseHandler)
 	a.engine.GET("/config", a.GUIConfigHandler)
 	a.engine.GET("/reset", a.GUIResetHandler)
