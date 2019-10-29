@@ -40,7 +40,7 @@ func (fb *FullBlock) RegisterStorables() {
 }
 
 // Store will open a database transaction and execute all the registered Storables in the said transaction
-func (fb *FullBlock) Store(db *sql.DB, m *metrics.Metrics) error {
+func (fb *FullBlock) Store(db *sql.DB, m *metrics.Provider) error {
 	exists, err := fb.checkBlockExists(db)
 	if err != nil {
 		return err

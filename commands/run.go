@@ -39,20 +39,16 @@ var runCmd = &cobra.Command{
 				PollInterval: viper.GetDuration("eth.poll-interval"),
 			},
 			TaskManager: taskmanager.Config{
-				RedisServer:   viper.GetString("redis.server"),
-				RedisPassword: viper.GetString("REDIS_PASSWORD"),
-				TodoList:      viper.GetString("redis.list"),
+				RedisServer:     viper.GetString("redis.server"),
+				RedisPassword:   viper.GetString("REDIS_PASSWORD"),
+				TodoList:        viper.GetString("redis.list"),
+				BackfillEnabled: viper.GetBool("feature.backfill.enabled"),
 			},
 			Scraper: scraper.Config{
 				NodeURL:      viper.GetString("eth.client.http"),
 				EnableUncles: viper.GetBool("feature.uncles.enabled"),
 			},
 			PostgresConnectionString: viper.GetString("db.connection-string"),
-			API: api.Config{
-				Port:           viper.GetString("api.port"),
-				DevCorsEnabled: viper.GetBool("api.dev-cors"),
-				DevCorsHost:    viper.GetString("api.dev-cors-host"),
-			},
 			Features: core.Features{
 				Backfill: viper.GetBool("feature.backfill.enabled"),
 				Lag: core.FeatureLag{
@@ -63,8 +59,14 @@ var runCmd = &cobra.Command{
 				Uncles:      viper.GetBool("feature.uncles.enabled"),
 			},
 		})
-
 		c.Run()
+
+		a := api.New(c, api.Config{
+			Port:           viper.GetString("api.port"),
+			DevCorsEnabled: viper.GetBool("api.dev-cors"),
+			DevCorsHost:    viper.GetString("api.dev-cors-host"),
+		})
+		go a.Run()
 
 		select {
 		case <-stopChan:

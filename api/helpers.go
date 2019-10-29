@@ -11,7 +11,7 @@ import (
 func (a *API) getBlockTxs(number int64) ([]types.Tx, error) {
 	var txs = make([]types.Tx, 0)
 
-	rows, err := a.db.Query(`select tx_index, tx_hash, value, "from", "to", msg_gas_limit, tx_gas_used, tx_gas_price from txs where included_in_block = $1 order by tx_index`, number)
+	rows, err := a.core.DB().Query(`select tx_index, tx_hash, value, "from", "to", msg_gas_limit, tx_gas_used, tx_gas_price from txs where included_in_block = $1 order by tx_index`, number)
 	if err != nil {
 		log.Error(err)
 		return nil, err
@@ -54,7 +54,7 @@ func (a *API) getDBEntries() (types.DBEntries, error) {
 	var dbEntries types.DBEntries
 	dbEntries = DBEntries
 
-	err := a.db.QueryRow(`
+	err := a.core.DB().QueryRow(`
 	select
 	       (select count(*) from blocks)::text as blocks,
 	       (select count(*) from txs)::text as txs,
@@ -73,12 +73,12 @@ func (a *API) getDBStats() (types.DBStats, error) {
 	var dbStats types.DBStats
 	dbStats = DBStats
 
-	err := a.db.QueryRow(`
+	err := a.core.DB().QueryRow(`
 		select pg_size_pretty(sum(table_size))   as table_size,
 			   pg_size_pretty(sum(indexes_size)) as indexes_size,
 			   pg_size_pretty(sum(total_size))   as total_size,
 			   (select version_id from goose_db_version order by id desc limit 1) as migration_version,
-		       (select number from blocks order by number desc limit 1) as max_block
+		       coalesce((select number from blocks order by number desc limit 1)::text, 'null') as max_block
 		from (
 				 select table_name,
 						pg_table_size(table_name)          as table_size,
@@ -108,9 +108,9 @@ func (a *API) getProcStats() types.ProcStats {
 	procStats = ProcStats
 
 	procStats.MemoryUsage.Value = strconv.FormatUint(bToMb(m.Sys), 10) + "MB"
-	procStats.TodoLength.Value = strconv.FormatInt(a.metrics.GetTodoLength(), 10)
-	procStats.ReorgedBlocks.Value = strconv.FormatInt(a.metrics.GetReorgedBlocks(), 10)
-	procStats.InvalidBlocks.Value = strconv.FormatInt(a.metrics.GetInvalidBlocks(), 10)
+	procStats.TodoLength.Value = strconv.FormatInt(a.core.Metrics().GetTodoLength(), 10)
+	procStats.ReorgedBlocks.Value = strconv.FormatInt(a.core.Metrics().GetReorgedBlocks(), 10)
+	procStats.InvalidBlocks.Value = strconv.FormatInt(a.core.Metrics().GetInvalidBlocks(), 10)
 
 	return procStats
 }
@@ -119,9 +119,9 @@ func (a *API) getTimingStats() types.TimingStats {
 	var timingStats types.TimingStats
 	timingStats = TimingStats
 
-	timingStats.ProcessingTime.Value = a.metrics.GetProcessingTime()
-	timingStats.ScrapingTime.Value = a.metrics.GetScrapingTime()
-	timingStats.IndexingTime.Value = a.metrics.GetIndexingTime()
+	timingStats.ProcessingTime.Value = a.core.Metrics().GetProcessingTime()
+	timingStats.ScrapingTime.Value = a.core.Metrics().GetScrapingTime()
+	timingStats.IndexingTime.Value = a.core.Metrics().GetIndexingTime()
 
 	return timingStats
 }

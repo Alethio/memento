@@ -26,4 +26,5 @@ type TimingStats struct {
 type Nav struct {
 	Latest  int64
 	Version string
+	Paused  bool
 }

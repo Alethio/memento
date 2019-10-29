@@ -9,8 +9,6 @@ import (
 
 	"github.com/pressly/goose"
 
-	"github.com/Alethio/memento/api"
-
 	"github.com/alethio/web3-go/validator"
 
 	"github.com/Alethio/memento/scraper"
@@ -25,18 +23,16 @@ var log = logrus.WithField("module", "core")
 type Core struct {
 	config Config
 
-	metrics     *metrics.Metrics
+	metrics     *metrics.Provider
 	bbtracker   *bestblock.Tracker
 	taskmanager *taskmanager.Manager
 	scraper     *scraper.Scraper
 	db          *sql.DB
-	api         *api.API
 
 	stopMu sync.Mutex
 }
 
 func New(config Config) *Core {
-	m := metrics.New()
 
 	bbtracker, err := bestblock.NewTracker(config.BestBlockTracker)
 	if err != nil {
@@ -57,12 +53,8 @@ func New(config Config) *Core {
 		}
 	}()
 
-	go func() {
-		m.RecordLatestBlock(bbtracker.BestBlock())
-		for b := range bbtracker.Subscribe() {
-			m.RecordLatestBlock(b)
-		}
-	}()
+	m := metrics.New()
+	m.RecordLatestBlock(bbtracker.BestBlock())
 
 	var lag int64
 	if config.Features.Lag.Enabled {
@@ -101,8 +93,6 @@ func New(config Config) *Core {
 
 	log.Info("connected to postgres successfuly")
 
-	a := api.New(db, m, tm, config.API)
-
 	return &Core{
 		config:      config,
 		metrics:     m,
@@ -110,14 +100,17 @@ func New(config Config) *Core {
 		taskmanager: tm,
 		scraper:     s,
 		db:          db,
-		api:         a,
 	}
 }
 
 func (c *Core) Run() {
-	go c.api.Start()
-
 	blockChan := make(chan int64)
+
+	go func() {
+		for b := range c.bbtracker.Subscribe() {
+			c.Metrics().RecordLatestBlock(b)
+		}
+	}()
 
 	max, err := c.getHighestBlock()
 	if err != nil {

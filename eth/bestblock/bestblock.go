@@ -103,10 +103,14 @@ func (b *Tracker) BestBlock() int64 {
 func (b *Tracker) publish(block int64) {
 	b.subsMutex.Lock()
 	defer b.subsMutex.Unlock()
+
+	log.WithField("block", block).Tracef("will publish to %d clients", len(b.subscribers))
+
 	for c := range b.subscribers {
+		cLocal := c
 		// do this to avoid blocking the tracker if the consumer is busy
 		go func() {
-			c <- block
+			cLocal <- block
 		}()
 	}
 }

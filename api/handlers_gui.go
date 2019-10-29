@@ -6,10 +6,8 @@ import (
 	"strconv"
 
 	"github.com/Alethio/memento/api/types"
-
-	"github.com/spf13/viper"
-
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func (a *API) GUIIndexHandler(c *gin.Context) {
@@ -25,8 +23,9 @@ func (a *API) GUIIndexHandler(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "index", gin.H{
 		"nav": types.Nav{
-			Latest:  a.metrics.GetLatestBLock(),
+			Latest:  a.core.Metrics().GetLatestBLock(),
 			Version: viper.GetString("version"),
+			Paused:  a.core.IsPaused(),
 		},
 		"dbEntries":   dbEntries,
 		"dbStats":     dbStats,
@@ -38,8 +37,9 @@ func (a *API) GUIIndexHandler(c *gin.Context) {
 func (a *API) GUIQueueHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "queue", gin.H{
 		"nav": types.Nav{
-			Latest:  a.metrics.GetLatestBLock(),
+			Latest:  a.core.Metrics().GetLatestBLock(),
 			Version: viper.GetString("version"),
+			Paused:  a.core.IsPaused(),
 		},
 	})
 }
@@ -51,8 +51,9 @@ func (a *API) GUIQueuePostHandler(c *gin.Context) {
 	defer func() {
 		c.HTML(http.StatusOK, "queue", gin.H{
 			"nav": types.Nav{
-				Latest:  a.metrics.GetLatestBLock(),
+				Latest:  a.core.Metrics().GetLatestBLock(),
 				Version: viper.GetString("version"),
+				Paused:  a.core.IsPaused(),
 			},
 			"errors":  errors,
 			"success": success,
@@ -67,7 +68,7 @@ func (a *API) GUIQueuePostHandler(c *gin.Context) {
 			return
 		}
 
-		err = a.taskmanager.Todo(blockInt)
+		err = a.core.AddTodo(blockInt)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Could not queue block: %s", err))
 			return
@@ -90,7 +91,7 @@ func (a *API) GUIQueuePostHandler(c *gin.Context) {
 		}
 
 		for i := startInt; i <= endInt; i++ {
-			err = a.taskmanager.Todo(i)
+			err = a.core.AddTodo(i)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Could not queue block: %s", err))
 				return
@@ -104,17 +105,30 @@ func (a *API) GUIQueuePostHandler(c *gin.Context) {
 func (a *API) GUIPauseHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "pause", gin.H{
 		"nav": types.Nav{
-			Latest:  a.metrics.GetLatestBLock(),
+			Latest:  a.core.Metrics().GetLatestBLock(),
 			Version: viper.GetString("version"),
+			Paused:  a.core.IsPaused(),
 		},
+		"paused": a.core.IsPaused(),
 	})
+}
+
+func (a *API) GUIPausePostHandler(c *gin.Context) {
+	if a.core.IsPaused() {
+		a.core.Resume()
+	} else {
+		a.core.Pause()
+	}
+
+	c.Redirect(302, "/pause")
 }
 
 func (a *API) GUIConfigHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "config", gin.H{
 		"nav": types.Nav{
-			Latest:  a.metrics.GetLatestBLock(),
+			Latest:  a.core.Metrics().GetLatestBLock(),
 			Version: viper.GetString("version"),
+			Paused:  a.core.IsPaused(),
 		},
 	})
 }
@@ -122,8 +136,35 @@ func (a *API) GUIConfigHandler(c *gin.Context) {
 func (a *API) GUIResetHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "reset", gin.H{
 		"nav": types.Nav{
-			Latest:  a.metrics.GetLatestBLock(),
+			Latest:  a.core.Metrics().GetLatestBLock(),
 			Version: viper.GetString("version"),
+			Paused:  a.core.IsPaused(),
 		},
 	})
+}
+
+func (a *API) GUIResetPostHandler(c *gin.Context) {
+	var errors []string
+	var success []string
+
+	defer func() {
+		c.HTML(http.StatusOK, "reset", gin.H{
+			"nav": types.Nav{
+				Latest:  a.core.Metrics().GetLatestBLock(),
+				Version: viper.GetString("version"),
+				Paused:  a.core.IsPaused(),
+			},
+			"errors":  errors,
+			"success": success,
+		})
+	}()
+
+	a.core.Pause()
+
+	err := a.core.Reset()
+	if err != nil {
+		errors = append(errors, err.Error())
+	} else {
+		success = append(success, "The database has been reset.")
+	}
 }

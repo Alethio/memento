@@ -25,8 +25,10 @@ func (a *API) setRoutes() {
 	a.engine.GET("/queue", a.GUIQueueHandler)
 	a.engine.POST("/queue", a.GUIQueuePostHandler)
 	a.engine.GET("/pause", a.GUIPauseHandler)
+	a.engine.POST("/pause", a.GUIPausePostHandler)
 	a.engine.GET("/config", a.GUIConfigHandler)
 	a.engine.GET("/reset", a.GUIResetHandler)
+	a.engine.POST("/reset", a.GUIResetPostHandler)
 }
 
 func dict(values ...interface{}) (map[string]interface{}, error) {

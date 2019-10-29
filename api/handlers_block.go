@@ -19,7 +19,7 @@ func (a *API) BlockHandler(c *gin.Context) {
 	)
 
 	if c.Param("block") == "latest" {
-		err := a.db.QueryRow("select number from blocks order by number desc limit 1").Scan(&blockNumber)
+		err := a.core.DB().QueryRow("select number from blocks order by number desc limit 1").Scan(&blockNumber)
 		if err != nil {
 			Error(c, err)
 			return
@@ -33,7 +33,7 @@ func (a *API) BlockHandler(c *gin.Context) {
 	}
 
 	var block types.Block
-	err = a.db.QueryRow("select number, block_hash, parent_block_hash, block_creation_time, block_gas_limit, block_gas_used, block_difficulty, total_block_difficulty, block_extra_data, block_mix_hash, block_nonce, block_size, block_logs_bloom, includes_uncle, has_beneficiary, has_receipts_trie, has_tx_trie, sha3_uncles, number_of_uncles, number_of_txs from blocks where number = $1 limit 1", blockNumber).Scan(
+	err = a.core.DB().QueryRow("select number, block_hash, parent_block_hash, block_creation_time, block_gas_limit, block_gas_used, block_difficulty, total_block_difficulty, block_extra_data, block_mix_hash, block_nonce, block_size, block_logs_bloom, includes_uncle, has_beneficiary, has_receipts_trie, has_tx_trie, sha3_uncles, number_of_uncles, number_of_txs from blocks where number = $1 limit 1", blockNumber).Scan(
 		&block.Number,
 		&block.BlockHash,
 		&block.ParentBlockHash,
@@ -91,7 +91,7 @@ func (a *API) BlockRangeHandler(c *gin.Context) {
 		return
 	}
 
-	rows, err := a.db.Query("select number, block_creation_time, has_beneficiary, number_of_txs from blocks where number between $1 and $2 order by number desc", start, end)
+	rows, err := a.core.DB().Query("select number, block_creation_time, has_beneficiary, number_of_txs from blocks where number between $1 and $2 order by number desc", start, end)
 	if err != nil && err != sql.ErrNoRows {
 		Error(c, err)
 		return

@@ -1,12 +1,7 @@
 package api
 
 import (
-	"database/sql"
-
-	"github.com/Alethio/memento/taskmanager"
-
-	"github.com/Alethio/memento/metrics"
-
+	"github.com/Alethio/memento/core"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -21,23 +16,20 @@ type Config struct {
 }
 
 type API struct {
-	config      Config
-	engine      *gin.Engine
-	db          *sql.DB
-	taskmanager *taskmanager.Manager
-	metrics     *metrics.Metrics
+	config Config
+	engine *gin.Engine
+
+	core *core.Core
 }
 
-func New(db *sql.DB, metrics *metrics.Metrics, taskmanager *taskmanager.Manager, config Config) *API {
+func New(core *core.Core, config Config) *API {
 	return &API{
-		config:      config,
-		db:          db,
-		taskmanager: taskmanager,
-		metrics:     metrics,
+		config: config,
+		core:   core,
 	}
 }
 
-func (a *API) Start() {
+func (a *API) Run() {
 	a.engine = gin.Default()
 
 	if a.config.DevCorsEnabled {

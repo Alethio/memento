@@ -1,50 +1,50 @@
 package metrics
 
-func (m *Metrics) GetProcessingTime() string {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) GetProcessingTime() string {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return m.processingTime.String()
+	return p.processingTime.String()
 }
 
-func (m *Metrics) GetScrapingTime() string {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) GetScrapingTime() string {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return m.scrapingTime.String()
+	return p.scrapingTime.String()
 }
 
-func (m *Metrics) GetIndexingTime() string {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) GetIndexingTime() string {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return m.indexingTime.String()
+	return p.indexingTime.String()
 }
 
-func (m *Metrics) GetLatestBLock() int64 {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) GetLatestBLock() int64 {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return m.latestBlock
+	return p.latestBlock
 }
 
-func (m *Metrics) GetTodoLength() int64 {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) GetTodoLength() int64 {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return m.todoLength
+	return p.todoLength
 }
 
-func (m *Metrics) GetReorgedBlocks() int64 {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) GetReorgedBlocks() int64 {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return m.reorgedBlocks
+	return p.reorgedBlocks
 }
 
-func (m *Metrics) GetInvalidBlocks() int64 {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) GetInvalidBlocks() int64 {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	return m.invalidBlocks
+	return p.invalidBlocks
 }

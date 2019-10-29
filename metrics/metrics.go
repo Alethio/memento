@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Metrics struct {
+type Provider struct {
 	mu sync.Mutex
 
 	processingTime AverageDuration
@@ -18,55 +18,55 @@ type Metrics struct {
 	invalidBlocks int64
 }
 
-func New() *Metrics {
-	return &Metrics{}
+func New() *Provider {
+	return &Provider{}
 }
 
-func (m *Metrics) RecordProcessingTime(duration time.Duration) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) RecordProcessingTime(duration time.Duration) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	m.processingTime.Add(duration)
+	p.processingTime.Add(duration)
 }
 
-func (m *Metrics) RecordScrapingTime(duration time.Duration) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) RecordScrapingTime(duration time.Duration) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	m.scrapingTime.Add(duration)
+	p.scrapingTime.Add(duration)
 }
 
-func (m *Metrics) RecordIndexingTime(duration time.Duration) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) RecordIndexingTime(duration time.Duration) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	m.indexingTime.Add(duration)
+	p.indexingTime.Add(duration)
 }
 
-func (m *Metrics) RecordLatestBlock(block int64) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) RecordLatestBlock(block int64) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	m.latestBlock = block
+	p.latestBlock = block
 }
 
-func (m *Metrics) RecordTodoLength(len int64) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) RecordTodoLength(len int64) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	m.todoLength = len
+	p.todoLength = len
 }
 
-func (m *Metrics) RecordReorgedBlock() {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) RecordReorgedBlock() {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	m.reorgedBlocks++
+	p.reorgedBlocks++
 }
 
-func (m *Metrics) RecordInvalidBlock() {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+func (p *Provider) RecordInvalidBlock() {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 
-	m.invalidBlocks++
+	p.invalidBlocks++
 }

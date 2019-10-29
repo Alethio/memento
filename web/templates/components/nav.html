@@ -13,17 +13,33 @@
             {{ template "nav-item" dict "Color" "text-red-500" "Hover" "red-700" "Href" "/reset"  "Icon" "restart" "Name" "Reset"}}
         </ul>
     </nav>
-    <div class="fixed bottom-0 right-0 bg-white px-4 py-2 flex items-center rounded-xl mb-8 mr-8">
-        {{ template "label" "Latest block"}}
-        {{ template "block" .Latest }}
+    <div class="fixed bottom-0 right-0 flex flex-col items-center mb-8 mr-8">
+        <div class="flex items-center w-full mb-4 bg-white rounded-xl px-4 py-2">
+            {{ template "label" "Status"}}
+            {{ with .Paused }}
+                <p class="text-blue-900">
+                    paused
+                </p>
+            {{ else }}
+                <p class="text-green-500">
+                    running
+                </p>
+            {{ end }}
+        </div>
+        <div class="flex items-center bg-white rounded-xl px-4 py-2">
+            {{ template "label" "Latest block"}}
+            {{ template "block" .Latest }}
+        </div>
     </div>
 {{ end }}
 
 {{ define "nav-item" }}
     <li class="w-full flex items-center">
-        <a href="{{ .Href }}" class="w-full m-4 rounded-xl flex items-center justify-center hover:bg-gray-200 hover:text-{{ .Hover }} transition {{ .Color }} menu-item">
+        <a href="{{ .Href }}"
+           class="w-full m-4 rounded-xl flex items-center justify-center hover:bg-gray-200 hover:text-{{ .Hover }} transition {{ .Color }} menu-item">
             <span class="mdi mdi-{{ .Icon }} py-2"></span>
-            <div class="px-4 py-2 absolute whitespace-no-wrap bg-{{ .Hover }} text-white shadow text-sm rounded-lg floating-label flex items-center" style="left: 96px;">
+            <div class="px-4 py-2 absolute whitespace-no-wrap bg-{{ .Hover }} text-white shadow text-sm rounded-lg floating-label flex items-center"
+                 style="left: 96px;">
                 <span class="caret absolute caret-{{ .Hover }}"></span>
                 {{ .Name }}
             </div>
