@@ -17,7 +17,10 @@ func (a *API) setRoutes() {
 	explorer.GET("/account/:address/txs", a.AccountTxsHandler)
 
 	a.engine.SetFuncMap(template.FuncMap{
-		"dict": dict,
+		"dict":  dict,
+		"isMap": isMap,
+		"plus":  plus,
+		"times": times,
 	})
 	a.engine.LoadHTMLGlob("web/templates/**/*")
 	a.engine.Use(static.Serve("/web/assets", static.LocalFile("web/assets", false)))
@@ -46,4 +49,17 @@ func dict(values ...interface{}) (map[string]interface{}, error) {
 	}
 
 	return dict, nil
+}
+
+func isMap(value interface{}) bool {
+	_, ok := value.(map[string]interface{})
+	return ok
+}
+
+func plus(x, y int) int {
+	return x + y
+}
+
+func times(x, y int) int {
+	return x * y
 }

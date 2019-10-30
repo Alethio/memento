@@ -11,37 +11,29 @@ import (
 )
 
 func (a *API) GUIIndexHandler(c *gin.Context) {
+	var errors []string
+
 	dbEntries, err := a.getDBEntries()
 	if err != nil {
-		//
+		errors = append(errors, err.Error())
 	}
 
 	dbStats, err := a.getDBStats()
 	if err != nil {
-		//
+		errors = append(errors, err.Error())
 	}
 
-	c.HTML(http.StatusOK, "index", gin.H{
-		"nav": types.Nav{
-			Latest:  a.core.Metrics().GetLatestBLock(),
-			Version: viper.GetString("version"),
-			Paused:  a.core.IsPaused(),
-		},
+	a.sendGUIResponse(c, "index", gin.H{
 		"dbEntries":   dbEntries,
 		"dbStats":     dbStats,
 		"procStats":   a.getProcStats(),
 		"timingStats": a.getTimingStats(),
+		"errors":      errors,
 	})
 }
 
 func (a *API) GUIQueueHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "queue", gin.H{
-		"nav": types.Nav{
-			Latest:  a.core.Metrics().GetLatestBLock(),
-			Version: viper.GetString("version"),
-			Paused:  a.core.IsPaused(),
-		},
-	})
+	a.sendGUIResponse(c, "queue", gin.H{})
 }
 
 func (a *API) GUIQueuePostHandler(c *gin.Context) {
@@ -49,12 +41,7 @@ func (a *API) GUIQueuePostHandler(c *gin.Context) {
 	var success []string
 
 	defer func() {
-		c.HTML(http.StatusOK, "queue", gin.H{
-			"nav": types.Nav{
-				Latest:  a.core.Metrics().GetLatestBLock(),
-				Version: viper.GetString("version"),
-				Paused:  a.core.IsPaused(),
-			},
+		a.sendGUIResponse(c, "queue", gin.H{
 			"errors":  errors,
 			"success": success,
 		})
@@ -103,14 +90,7 @@ func (a *API) GUIQueuePostHandler(c *gin.Context) {
 }
 
 func (a *API) GUIPauseHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "pause", gin.H{
-		"nav": types.Nav{
-			Latest:  a.core.Metrics().GetLatestBLock(),
-			Version: viper.GetString("version"),
-			Paused:  a.core.IsPaused(),
-		},
-		"paused": a.core.IsPaused(),
-	})
+	a.sendGUIResponse(c, "pause", gin.H{})
 }
 
 func (a *API) GUIPausePostHandler(c *gin.Context) {
@@ -124,23 +104,20 @@ func (a *API) GUIPausePostHandler(c *gin.Context) {
 }
 
 func (a *API) GUIConfigHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "config", gin.H{
-		"nav": types.Nav{
-			Latest:  a.core.Metrics().GetLatestBLock(),
-			Version: viper.GetString("version"),
-			Paused:  a.core.IsPaused(),
-		},
+	var ignore = []string{"to", "from", "block", "version"}
+
+	settings := viper.AllSettings()
+	for _, v := range ignore {
+		delete(settings, v)
+	}
+
+	a.sendGUIResponse(c, "config", gin.H{
+		"settings": settings,
 	})
 }
 
 func (a *API) GUIResetHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "reset", gin.H{
-		"nav": types.Nav{
-			Latest:  a.core.Metrics().GetLatestBLock(),
-			Version: viper.GetString("version"),
-			Paused:  a.core.IsPaused(),
-		},
-	})
+	a.sendGUIResponse(c, "reset", gin.H{})
 }
 
 func (a *API) GUIResetPostHandler(c *gin.Context) {
@@ -148,12 +125,7 @@ func (a *API) GUIResetPostHandler(c *gin.Context) {
 	var success []string
 
 	defer func() {
-		c.HTML(http.StatusOK, "reset", gin.H{
-			"nav": types.Nav{
-				Latest:  a.core.Metrics().GetLatestBLock(),
-				Version: viper.GetString("version"),
-				Paused:  a.core.IsPaused(),
-			},
+		a.sendGUIResponse(c, "reset", gin.H{
 			"errors":  errors,
 			"success": success,
 		})
@@ -167,4 +139,22 @@ func (a *API) GUIResetPostHandler(c *gin.Context) {
 	} else {
 		success = append(success, "The database has been reset.")
 	}
+}
+
+func (a *API) sendGUIResponse(c *gin.Context, template string, data gin.H) {
+	c.HTML(http.StatusOK, template, mergeMaps(gin.H{
+		"nav": types.Nav{
+			Latest:  a.core.Metrics().GetLatestBLock(),
+			Version: viper.GetString("version"),
+			Paused:  a.core.IsPaused(),
+		},
+	}, data))
+}
+
+func mergeMaps(src, dst gin.H) gin.H {
+	for k, v := range src {
+		dst[k] = v
+	}
+
+	return dst
 }

@@ -2,25 +2,17 @@
     {{ template "start" .nav }}
 
     <div class="container pl-32 pr-12 mx-auto">
-        {{ with .errors }}
-            <div class="flex flex-col pt-6 sm:pt-10">
-                {{ range . }}
-                    <div class="bg-red-500 text-white px-4 py-2 my-2 rounded-xl">{{ . }}</div>
-                {{ end }}
-            </div>
-        {{ end }}
+        <div class="mt-6 sm:mt-10 flex items-center text-blue-900">
+            <span class="mdi mdi-clipboard-list-outline mr-4 text-3xl"></span>
+            <h1 class="text-2xl">Queue blocks</h1>
+        </div>
 
-        {{ with .success }}
-            <div class="flex flex-col pt-6 sm:pt-10">
-                {{ range . }}
-                    <div class="bg-green-500 text-white px-4 py-2 my-2 rounded-xl">{{ . }}</div>
-                {{ end }}
-            </div>
-        {{ end }}
+        {{ template "errors" .errors }}
+        {{ template "success" .success }}
 
         <div class="flex flex-col pt-6 sm:pt-10">
-            <h2 class="font-semibold text-sm uppercase text-grey-600">Queue single block</h2>
-            <p class="text-grey-500">Add a single block to the todo list.</p>
+            <h2 class="font-semibold text-sm uppercase text-blue-900">Queue single block</h2>
+            <p class="text-grey-600">Add a single block to the todo list.</p>
             <form method="post" action="/queue" class="flex flex-col flex-start pt-4">
                 <input type="hidden" name="type" value="single">
                 <input name="block" type="text" placeholder="Block number"
@@ -28,15 +20,15 @@
                 >
                 <div>
                     <button class="px-4 py-2 my-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
-                        Hocus pocus
+                        Submit
                     </button>
                 </div>
             </form>
         </div>
 
         <div class="flex flex-col pt-6 sm:pt-10">
-            <h2 class="font-semibold text-sm uppercase text-grey-600">Queue interval</h2>
-            <p class="text-grey-500">Add all the blocks from start to end into the todo list.</p>
+            <h2 class="font-semibold text-sm uppercase text-blue-900">Queue interval</h2>
+            <p class="text-grey-600">Add all the blocks from start to end into the todo list.</p>
             <form method="post" action="/queue" class="flex flex-col pt-4">
                 <input type="hidden" name="type" value="interval">
                 <div class="flex my-2">
@@ -49,7 +41,7 @@
                 </div>
                 <div>
                     <button class="px-4 py-2 my-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
-                        Hocus pocus
+                        Submit
                     </button>
                 </div>
             </form>
