@@ -6,7 +6,7 @@
 
         <div class="flex flex-col pt-6 sm:pt-10">
             <h2 class="font-semibold text-sm uppercase text-grey-600">General</h2>
-            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin -mx-4">
                 {{ template "stat" .dbStats.MaxBlock }}
                 {{ template "stat" .procStats.TodoLength }}
                 {{ template "stat" .procStats.ReorgedBlocks }}
@@ -15,7 +15,7 @@
         </div>
         <div class="flex flex-col pt-6 sm:pt-10">
             <h2 class="font-semibold text-sm uppercase text-grey-600">Processing</h2>
-            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin -mx-4">
                 {{ template "stat" .timingStats.ScrapingTime }}
                 {{ template "stat" .timingStats.IndexingTime }}
                 {{ template "stat" .timingStats.ProcessingTime }}
@@ -24,7 +24,7 @@
         </div>
         <div class="flex flex-col pt-6 sm:pt-10">
             <h2 class="font-semibold text-sm uppercase text-grey-600">Indexed entities</h2>
-            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin -mx-4">
                 {{ template "stat" .dbEntries.Blocks }}
                 {{ template "stat" .dbEntries.Txs }}
                 {{ template "stat" .dbEntries.LogEntries }}
@@ -33,7 +33,7 @@
         </div>
         <div class="flex flex-col pt-6 sm:pt-10">
             <h2 class="font-semibold text-sm uppercase text-grey-600">Database</h2>
-            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin">
+            <div class="flex flex-col sm:flex-row mt-2 flex-wrap no-outer-margin -mx-4">
                 {{ template "stat" .dbStats.DataSize }}
                 {{ template "stat" .dbStats.IndexesSize }}
                 {{ template "stat" .dbStats.TotalSize }}

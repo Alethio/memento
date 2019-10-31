@@ -19,73 +19,6 @@ button,input {
     outline: none !important;
 }
 
-.text-blue-500 {
-    color: #004aff !important;
-}
-
-.hover\:text-blue-500:hover {
-    color: #004aff !important;
-}
-
-.hover\:text-blue-900:hover {
-    color: #273556 !important;
-}
-
-.text-blue-900 {
-    color: #273556 !important;
-}
-
-.bg-blue-900 {
-    background-color: #273556 !important;
-}
-
-.text-grey-500 {
-    color: #d0def2 !important;
-}
-
-.text-grey-600 {
-    color: #a7b5d1 !important;
-}
-
-.bg-blue-500 {
-    background-color: #004aff !important;
-}
-
-.border-grey-500 {
-    border-color: #d0def2 !important;
-}
-
-.border-blue-500 {
-    border-color: #004aff !important;
-}
-
-.hover\:border-blue-500:hover {
-    border-color: #004aff !important;
-}
-
-.focus\:border-blue-500:focus {
-    border-color: #004aff !important;
-}
-
-.hover\:bg-white:hover {
-    background-color: #ffffff !important;
-}
-
-.shadow {
-    box-shadow: 0 8px 16px -5px rgba(203, 212, 226, 0.25) !important;
-}
-
-.shadow-md {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06) !important;
-}
-
-.shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, .09), 0 4px 6px -2px rgba(0, 0, 0, .05) !important;
-}
-
-.shadow-xl {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, .08), 0 10px 10px -5px rgba(0, 0, 0, .04) !important;
-}
 
 .block-shadow {
     box-shadow: 0 8px 16px 0 rgba(0, 74, 255, 0.22);
@@ -93,16 +26,6 @@ button,input {
 
 .rounded-xl {
     border-radius: 12px;
-}
-
-@media (min-width: 1024px) {
-    .no-outer-margin > div:first-child > div {
-        margin-left: 0;
-    }
-
-    .no-outer-margin > div:last-child > div {
-        margin-right: 0;
-    }
 }
 
 .menu-item > .floating-label {
