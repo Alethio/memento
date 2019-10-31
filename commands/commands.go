@@ -17,7 +17,6 @@ var (
 	config            string
 	version           bool
 	verbose, vverbose bool
-	logging           string
 
 	RootCmd = &cobra.Command{
 		Use:   "memento",
@@ -71,6 +70,8 @@ var (
 
 				viper.Set("db.connection-string", p)
 			}
+
+			initLogging()
 		},
 
 		Run: func(cmd *cobra.Command, args []string) {
@@ -82,7 +83,6 @@ var (
 )
 
 func init() {
-	cobra.OnInitialize(initLogging)
 	cobra.OnInitialize(func() {
 		viper.Set("version", RootCmd.Version)
 	})
@@ -92,7 +92,9 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&config, "config", "", "/path/to/config.yml")
 	RootCmd.PersistentFlags().BoolVar(&verbose, "v", false, "Set all logging modules to debug (shorthand for `--logging=*=debug`)")
 	RootCmd.PersistentFlags().BoolVar(&vverbose, "vv", false, "Set all logging modules to trace (shorthand for `--logging=*=trace`)")
-	RootCmd.PersistentFlags().StringVar(&logging, "logging", "", "Display debug messages")
+
+	RootCmd.PersistentFlags().String("logging", "", "Display debug messages")
+	viper.BindPFlag("logging", RootCmd.Flag("logging"))
 
 	// local flags;
 	RootCmd.Flags().BoolVar(&version, "version", false, "Display the current version of this CLI")

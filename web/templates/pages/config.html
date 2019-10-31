@@ -2,23 +2,27 @@
     {{ template "start" .nav }}
 
     <div class="container pl-32 pr-12 mx-auto">
+        {{ template "page-title" dict "Title" "Configuration" "Icon" "file-settings-variant"}}
+
         {{ template "errors" .errors }}
         {{ template "success" .success }}
 
-        <div class="flex flex-col pt-6 sm:pt-10">
-            <h2 class="font-semibold text-sm uppercase text-blue-900">Configuration</h2>
-            <div class="flex flex-col">
-                <form method="post" action="/config">
-                    <button class="px-4 py-2 my-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
-                        Save
-                    </button>
-                    {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
-                    <button class="px-4 py-2 my-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
-                        Save
-                    </button>
-                </form>
+        {{ template "info" "When saving the configuration, Memento will exit in order to apply the new settings. If you're running in docker, it should be restarted automatically" }}
+
+        <form method="post" action="/config" class="mt-4">
+            <div class="flex flex-wrap items-stretch -mx-2">
+                {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
             </div>
-        </div>
+
+            <div class="my-2 flex -mx-2">
+                <button class="px-4 py-2 mx-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
+                    Save & restart
+                </button>
+
+                <input type="reset"
+                       class="px-4 py-2 mx-2 font-bold text-sm text-blue-900 border border-transparent bg-transparent cursor-pointer">
+            </div>
+        </form>
     </div>
 
     {{ template "end" }}
@@ -31,24 +35,32 @@
     {{ range $key, $value := .Value }}
         {{ if isMap $value }}
             {{ if eq $step 0 }}
-                <div class="flex flex-wrap my-4">
-                    <div class="rounded-xl my-4 px-8 py-4 bg-white">
+                <div class="p-2 w-1/4 flex">
+                    <div class="rounded-xl px-8 py-4 bg-white w-full shadow">
                         <p class="font-semibold mb-4 uppercase text-blue-900">{{ $key }}</p>
 
                         {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "uid" (printf "%s.%s" $uid $key) }}
                     </div>
                 </div>
             {{ else }}
-                <div class="flex flex-wrap ml-{{ times $step 4 }}">
-                    <div class="rounded-xl my-4">
-                        <p class="text-blue-900">{{ $key }}</p>
+                <div class="ml-{{ times $step 4 }} my-4">
+                    <p class="text-blue-900">{{ $key }}</p>
 
-                        {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "uid" (printf "%s.%s" $uid $key) }}
-                    </div>
+                    {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "uid" (printf "%s.%s" $uid $key) }}
                 </div>
             {{ end}}
         {{ else }}
-            {{ template "config-value" dict "Label" $key "Value" $value "Step" $step "uid" (printf "%s.%s" $uid $key) }}
+            {{ if eq $step 0 }}
+                <div class="p-2 w-1/4 flex">
+                    <div class="rounded-xl px-8 py-4 bg-white w-full shadow">
+                        <p class="font-semibold mb-4 uppercase text-blue-900">{{ $key }}</p>
+
+                        {{ template "config-value" dict "Label" $key "Value" $value "Step" $step "uid" (printf "%s.%s" $uid $key) }}
+                    </div>
+                </div>
+            {{ else }}
+                {{ template "config-value" dict "Label" $key "Value" $value "Step" $step "uid" (printf "%s.%s" $uid $key) }}
+            {{ end }}
         {{ end }}
     {{ end }}
 {{ end }}
@@ -70,7 +82,7 @@
             </label>
         {{ else }}
             <input type="text" value="{{ .Value }}" name="{{ .uid }}"
-                   class="px-4 py-2 my-2 w-64 border border-white hover:border-blue-500 focus:border-blue-500 transition rounded-xl text-blue-900 border-grey-500">
+                   class="px-4 py-2 my-2 border border-white hover:border-blue-500 focus:border-blue-500 transition rounded-xl text-blue-900 border-grey-500">
         {{ end }}
     </div>
 {{ end }}

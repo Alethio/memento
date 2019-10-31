@@ -2,10 +2,7 @@
     {{ template "start" .nav }}
 
     <div class="container pl-32 pr-12 mx-auto">
-        <div class="mt-6 sm:mt-10 flex items-center text-blue-900">
-            <span class="mdi mdi-clipboard-list-outline mr-4 text-3xl"></span>
-            <h1 class="text-2xl">Queue blocks</h1>
-        </div>
+        {{ template "page-title" dict "Title" "Queue blocks" "Icon" "clipboard-list-outline"}}
 
         {{ template "errors" .errors }}
         {{ template "success" .success }}

@@ -73,3 +73,5 @@ feature:
   uncles:
     # Enable/disabled the uncles scraping
     enabled: true
+
+logging: "*=info"

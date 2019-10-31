@@ -3,8 +3,6 @@ package core
 import (
 	"os"
 	"time"
-
-	"github.com/Alethio/memento/metrics"
 )
 
 func (c *Core) AddTodo(block int64) error {
@@ -54,12 +52,14 @@ func (c *Core) Reset() error {
 		return err
 	}
 
-	c.metrics = metrics.New()
+	c.metrics.Reset()
+	c.metrics.RecordLatestBlock(c.bbtracker.BestBlock())
 
 	return nil
 }
 
 func (c *Core) ExitDelayed() {
+	c.Pause()
 	time.Sleep(2 * time.Second)
 	c.Close()
 	os.Exit(0)

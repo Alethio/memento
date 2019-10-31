@@ -22,6 +22,17 @@ func New() *Provider {
 	return &Provider{}
 }
 
+func (p *Provider) Reset() {
+	p.processingTime.Reset()
+	p.scrapingTime.Reset()
+	p.indexingTime.Reset()
+
+	p.latestBlock = 0
+	p.todoLength = 0
+	p.reorgedBlocks = 0
+	p.invalidBlocks = 0
+}
+
 func (p *Provider) RecordProcessingTime(duration time.Duration) {
 	p.mu.Lock()
 	defer p.mu.Unlock()

@@ -2,6 +2,8 @@
     {{ template "start" .nav }}
 
     <div class="container pl-32 pr-12 mx-auto">
+        {{ template "page-title" dict "Title" "Reset" "Icon" "restart"}}
+
         {{ template "errors" .errors }}
         {{ template "success" .success }}
 
@@ -10,8 +12,8 @@
             <p class="text-grey-600">Resetting Memento will erase everything from the database and everything that's queued in the todo list at the moment.</p>
             <p class="text-grey-600">When you resume the processing, <strong>if the backfilling feature is enabled</strong>, it will automatically add the whole chain to the todo list.</p>
 
-            <p class="bg-gray-200 text-grey-600 px-4 py-2 mt-4 rounded-xl">Notice: Memento will be automatically paused. You have to manually resume it!</p>
-            <p class="bg-orange-200 text-orange-600 px-4 py-2 mt-4 rounded-xl">Warning: This will erase everything from the database!</p>
+            {{ template "info" "Memento will be automatically paused. You have to manually resume it!" }}
+            {{ template "warning" "This will erase everything from the database!" }}
 
             <form method="post" action="/reset" class="flex flex-col flex-start pt-4">
                 <div>

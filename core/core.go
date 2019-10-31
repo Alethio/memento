@@ -33,7 +33,6 @@ type Core struct {
 }
 
 func New(config Config) *Core {
-
 	bbtracker, err := bestblock.NewTracker(config.BestBlockTracker)
 	if err != nil {
 		log.Fatal("could not start best block tracker")
@@ -112,37 +111,39 @@ func (c *Core) Run() {
 		}
 	}()
 
-	max, err := c.getHighestBlock()
-	if err != nil {
-		log.Fatal("could not get highest block from db:", err)
-	}
-
-	log.WithField("block", max).Info("got highest block from db")
-
-	best := c.bbtracker.BestBlock()
-
-	log.WithField("block", best).Info("got highest block from network")
-
-	if c.config.Features.Backfill {
-		var lag int64
-		if c.config.Features.Lag.Enabled {
-			lag = c.config.Features.Lag.Value
+	go func() {
+		max, err := c.getHighestBlock()
+		if err != nil {
+			log.Fatal("could not get highest block from db:", err)
 		}
 
-		backfillTarget := best - lag
+		log.WithField("block", max).Info("got highest block from db")
 
-		if max+1 < backfillTarget {
-			log.Infof("adding tasks for %d blocks to be backfilled", backfillTarget-max+1)
-			for i := max; i <= backfillTarget; i++ {
-				err := c.taskmanager.Todo(i)
-				if err != nil {
-					log.Fatal("could not add task:", err)
+		best := c.bbtracker.BestBlock()
+
+		log.WithField("block", best).Info("got highest block from network")
+
+		if c.config.Features.Backfill {
+			var lag int64
+			if c.config.Features.Lag.Enabled {
+				lag = c.config.Features.Lag.Value
+			}
+
+			backfillTarget := best - lag
+
+			if max+1 < backfillTarget {
+				log.Infof("adding tasks for %d blocks to be backfilled", backfillTarget-max+1)
+				for i := max; i <= backfillTarget; i++ {
+					err := c.taskmanager.Todo(i)
+					if err != nil {
+						log.Fatal("could not add task:", err)
+					}
 				}
 			}
+		} else {
+			log.Info("skipping backfilling since feature is disabled")
 		}
-	} else {
-		log.Info("skipping backfilling since feature is disabled")
-	}
+	}()
 
 	go c.taskmanager.FeedToChan(blockChan)
 
