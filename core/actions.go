@@ -1,6 +1,11 @@
 package core
 
-import "github.com/Alethio/memento/metrics"
+import (
+	"os"
+	"time"
+
+	"github.com/Alethio/memento/metrics"
+)
 
 func (c *Core) AddTodo(block int64) error {
 	return c.taskmanager.Todo(block)
@@ -52,4 +57,10 @@ func (c *Core) Reset() error {
 	c.metrics = metrics.New()
 
 	return nil
+}
+
+func (c *Core) ExitDelayed() {
+	time.Sleep(2 * time.Second)
+	c.Close()
+	os.Exit(0)
 }

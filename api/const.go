@@ -33,3 +33,5 @@ var TimingStats = types.TimingStats{
 	ScrapingTime:   types.Stat{Name: "Scraping time / block", Icon: "flip-horizontal", Color: "orange"},
 	IndexingTime:   types.Stat{Name: "Indexing time / block", Icon: "card-search-outline", Color: "orange"},
 }
+
+var ViperIgnoredSettings = []string{"to", "from", "block", "version", "db.connection-string"}

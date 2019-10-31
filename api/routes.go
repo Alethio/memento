@@ -30,6 +30,7 @@ func (a *API) setRoutes() {
 	a.engine.GET("/pause", a.GUIPauseHandler)
 	a.engine.POST("/pause", a.GUIPausePostHandler)
 	a.engine.GET("/config", a.GUIConfigHandler)
+	a.engine.POST("/config", a.GUIConfigPostHandler)
 	a.engine.GET("/reset", a.GUIResetHandler)
 	a.engine.POST("/reset", a.GUIResetPostHandler)
 }

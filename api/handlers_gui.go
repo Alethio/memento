@@ -104,15 +104,70 @@ func (a *API) GUIPausePostHandler(c *gin.Context) {
 }
 
 func (a *API) GUIConfigHandler(c *gin.Context) {
-	var ignore = []string{"to", "from", "block", "version"}
+	if viper.ConfigFileUsed() == "" {
+		a.sendGUIResponse(c, "config", gin.H{
+			"settings": map[string]interface{}{},
+			"errors":   []string{"Memento did not start using a config file."},
+		})
 
-	settings := viper.AllSettings()
-	for _, v := range ignore {
-		delete(settings, v)
+		return
 	}
 
 	a.sendGUIResponse(c, "config", gin.H{
-		"settings": settings,
+		"settings": getSettings(),
+	})
+}
+
+func (a *API) GUIConfigPostHandler(c *gin.Context) {
+	if viper.ConfigFileUsed() == "" {
+		c.Redirect(302, "/config")
+
+		return
+	}
+
+	var data = make(map[string]interface{})
+
+	for _, k := range viper.AllKeys() {
+		v, exists := c.GetPostForm(fmt.Sprintf(".%s", k))
+
+		// booleans are treated as a toggle (checkbox behind the scenes) in the interface
+		// we're doing this due to the checkboxes behavior = not sending data if they're unchecked
+		if _, ok := viper.Get(k).(bool); ok {
+			data[k] = exists && v == "on"
+			continue
+		}
+
+		if !exists {
+			continue
+		}
+
+		data[k] = v
+	}
+
+	for _, k := range ViperIgnoredSettings {
+		delete(data, k)
+	}
+
+	disposableViper := viper.New()
+	for k, v := range data {
+		viper.Set(k, v)
+		disposableViper.Set(k, v)
+	}
+
+	err := disposableViper.WriteConfigAs(viper.ConfigFileUsed())
+	if err != nil {
+		a.sendGUIResponse(c, "config", gin.H{
+			"settings": getSettings(),
+			"errors":   []string{err.Error()},
+		})
+		return
+	}
+
+	go a.core.ExitDelayed()
+
+	a.sendGUIResponse(c, "config", gin.H{
+		"settings": getSettings(),
+		"success":  []string{"Config updated successfully. Application will be closed in 2 seconds to apply the new settings."},
 	})
 }
 

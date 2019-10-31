@@ -107,8 +107,8 @@ func init() {
 	runCmd.Flags().String("eth.client.ws", "", "WS endpoint of JSON-RPC enabled Ethereum node (provide this only if you want to use websocket subscription for tracking best block)")
 	viper.BindPFlag("eth.client.ws", runCmd.Flag("eth.client.ws"))
 
-	runCmd.Flags().Duration("eth.poll-interval", 15*time.Second, "Interval to be used for polling the Ethereum node for best block")
-	viper.BindPFlag("eth.poll-interval", runCmd.Flag("eth.poll-interval"))
+	runCmd.Flags().Duration("eth.client.poll-interval", 15*time.Second, "Interval to be used for polling the Ethereum node for best block")
+	viper.BindPFlag("eth.client.poll-interval", runCmd.Flag("eth.client.poll-interval"))
 
 	// api
 	runCmd.Flags().String("api.port", "3001", "HTTP API port")

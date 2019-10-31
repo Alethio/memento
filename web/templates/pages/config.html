@@ -3,11 +3,20 @@
 
     <div class="container pl-32 pr-12 mx-auto">
         {{ template "errors" .errors }}
+        {{ template "success" .success }}
 
         <div class="flex flex-col pt-6 sm:pt-10">
             <h2 class="font-semibold text-sm uppercase text-blue-900">Configuration</h2>
             <div class="flex flex-col">
-                {{ template "recursive-config" dict "Value" .settings "Step" 0 "Parent" "" }}
+                <form method="post" action="/config">
+                    <button class="px-4 py-2 my-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
+                        Save
+                    </button>
+                    {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
+                    <button class="px-4 py-2 my-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
+                        Save
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -18,15 +27,15 @@
 
 {{ define "recursive-config" }}
     {{ $step := .Step }}
-    {{ $parent := .Parent }}
+    {{ $uid := .uid }}
     {{ range $key, $value := .Value }}
         {{ if isMap $value }}
             {{ if eq $step 0 }}
                 <div class="flex flex-wrap my-4">
-                    <div class="rounded-xl my-4 px-8 py-4">
+                    <div class="rounded-xl my-4 px-8 py-4 bg-white">
                         <p class="font-semibold mb-4 uppercase text-blue-900">{{ $key }}</p>
 
-                        {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "Parent" (printf "%s.%s" $parent $key) }}
+                        {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "uid" (printf "%s.%s" $uid $key) }}
                     </div>
                 </div>
             {{ else }}
@@ -34,12 +43,12 @@
                     <div class="rounded-xl my-4">
                         <p class="text-blue-900">{{ $key }}</p>
 
-                        {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "Parent" (printf "%s.%s" $parent $key) }}
+                        {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "uid" (printf "%s.%s" $uid $key) }}
                     </div>
                 </div>
             {{ end}}
         {{ else }}
-            {{ template "config-value" dict "Label" $key "Value" $value "Step" $step "Parent" (printf "%s.%s" $parent $key) }}
+            {{ template "config-value" dict "Label" $key "Value" $value "Step" $step "uid" (printf "%s.%s" $uid $key) }}
         {{ end }}
     {{ end }}
 {{ end }}
@@ -49,10 +58,10 @@
         <p class="text-grey-600 mr-4">{{ .Label }}:</p>
 
         {{ if eq (printf "%T" .Value) "bool" }}
-            <label for="toogle{{ .Parent }}" class="flex items-center cursor-pointer my-2">
+            <label for="toogle{{ .uid }}" class="flex items-center cursor-pointer my-2">
                 <div class="relative">
-                    <input id="toogle{{ .Parent }}" type="checkbox"
-                           class="hidden" {{ if eq .Value true }} checked {{end}}/>
+                    <input id="toogle{{ .uid }}" type="checkbox"
+                           class="hidden" {{ if eq .Value true }} checked {{end}} name="{{ .uid }}"/>
                     <!-- line -->
                     <div class="toggle__line w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
                     <!-- dot -->
@@ -60,7 +69,7 @@
                 </div>
             </label>
         {{ else }}
-            <input type="text" value="{{ .Value }}"
+            <input type="text" value="{{ .Value }}" name="{{ .uid }}"
                    class="px-4 py-2 my-2 w-64 border border-white hover:border-blue-500 focus:border-blue-500 transition rounded-xl text-blue-900 border-grey-500">
         {{ end }}
     </div>

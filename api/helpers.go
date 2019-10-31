@@ -4,6 +4,8 @@ import (
 	"runtime"
 	"strconv"
 
+	"github.com/spf13/viper"
+
 	"github.com/Alethio/memento/api/types"
 	"github.com/Alethio/memento/data/storable"
 )
@@ -128,4 +130,15 @@ func (a *API) getTimingStats() types.TimingStats {
 
 func bToMb(b uint64) uint64 {
 	return b / 1024 / 1024
+}
+
+func getSettings() map[string]interface{} {
+	settings := viper.AllSettings()
+	for _, v := range ViperIgnoredSettings {
+		delete(settings, v)
+	}
+
+	delete(settings["db"].(map[string]interface{}), "connection-string")
+
+	return settings
 }
