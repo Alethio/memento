@@ -1,17 +1,39 @@
 {{ define "stat" }}
-    <div class="w-full sm:w-1/2 lg:w-1/4">
-        <div class="py-2 sm:py-0 sm:m-4">
-            <div class="py-2 sm:py-0 bg-white w-full rounded-xl flex">
-                <div class="flex items-center px-4" role="icon">
-                    <div class="flex items-center justify-center w-10 h-10 bg-{{ .Color }}-100 rounded-xl">
-                        <span class="mdi mdi-{{ .Icon }} text-{{ .Color }}-600 text-2xl"></span>
-                    </div>
-                </div>
-                <div class="py-2 sm:py-4 flex w-full flex-col">
-                    <p class="text-blue-900 font-bold text-2xl" style="line-height: 26px">{{ .Value }}</p>
-                    <p class="text-grey-600 text-xs" style="line-height: 14px">{{ .Name }}</p>
-                </div>
-            </div>
+    <div class="bg-white rounded-xl border border-gray-300 w-full py-4 flex flex-col items-center m-2 sm:m-4">
+        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-{{.Color}}-100">
+            <span class="mdi mdi-{{.Icon}} text-xl sm:text-2xl text-{{.Color}}-500"></span>
         </div>
+        <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight mt-2 sm:mt-4">{{ .Value }}</p>
+        <p class="text-gray-500 text-xs font-semibold">{{ .Name }}</p>
+    </div>
+{{ end }}
+
+{{ define "stat-highlight" }}
+    <div class="bg-{{ .Color }}-500 rounded-xl border border-gray-300 w-full py-4 flex flex-col items-center m-2 sm:m-4">
+        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-{{.Color}}-600">
+            <span class="mdi mdi-{{.Icon}} text-xl sm:text-2xl text-white"></span>
+        </div>
+        <p class="text-white text-xl sm:text-2xl font-bold leading-tight mt-2 sm:mt-4">{{ .Value }}</p>
+        <p class="text-white text-xs font-semibold">{{ .Name }}</p>
+    </div>
+{{ end }}
+
+{{ define "stat-inline" }}
+    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-{{.Color}}-100 mr-2">
+        <span class="mdi mdi-{{.Icon}} text-xl sm:text-2xl text-{{.Color}}-500"></span>
+    </div>
+    <div class="flex flex-col">
+        <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight">{{ .Value }}</p>
+        <p class="text-gray-500 text-xs font-semibold">{{ .Name }}</p>
+    </div>
+{{ end }}
+
+{{ define "stat-inline-chart" }}
+    <div class="flex justify-center w-2 mr-2 mt-3">
+        <span class="rounded-full w-2 h-2" style="background-color: {{.Color}}"></span>
+    </div>
+    <div class="flex flex-col">
+        <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight">{{ .Value }}</p>
+        <p class="text-gray-500 text-xs font-semibold">{{ .Name }}</p>
     </div>
 {{ end }}

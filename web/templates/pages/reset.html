@@ -1,27 +1,48 @@
 {{ define "reset" }}
     {{ template "start" .nav }}
 
-    <div class="container pl-32 pr-12 mx-auto">
-        {{ template "page-title" dict "Title" "Reset" "Icon" "restart"}}
+    <div class="w-screen min-h-screen flex sm:items-center justify-center px-4 sm:pl-32 sm:pr-12">
+        <div class="w-full max-w-lg flex flex-col mb-24 sm:mb-64">
+            {{ template "page-title" dict "Title" "Reset Memento"}}
 
-        {{ template "errors" .errors }}
-        {{ template "success" .success }}
+            <p class="text-blue-900 text-sm font-semibold mb-2">
+                Resetting Memento will erase everything from the database and everything that's
+                queued in the todo list at the moment.
+            </p>
 
-        <div class="flex flex-col pt-6 sm:pt-10">
-            <h2 class="font-semibold text-sm uppercase text-blue-900">Reset Memento</h2>
-            <p class="text-grey-600">Resetting Memento will erase everything from the database and everything that's queued in the todo list at the moment.</p>
-            <p class="text-grey-600">When you resume the processing, <strong>if the backfilling feature is enabled</strong>, it will automatically add the whole chain to the todo list.</p>
+            <p class="text-blue-900 text-sm font-semibold mb-10">
+                When you resume the processing, <span class="text-blue-500">if the backfilling feature is
+                    enabled</span>, it will automatically add the whole chain to the todo list.
+            </p>
 
-            {{ template "info" "Memento will be automatically paused. You have to manually resume it!" }}
-            {{ template "warning" "This will erase everything from the database!" }}
+            {{ template "errors" .errors }}
+            {{ template "success" .success }}
 
-            <form method="post" action="/reset" class="flex flex-col flex-start pt-4">
-                <div>
-                    <button class="px-4 py-2 my-2 bg-red-500 font-bold text-sm text-white rounded-xl border border-red-500 hover:bg-white hover:text-red-500 transition">
+            <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+                <div class="mr-4">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                        <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <p class="text-blue-900 text-sm font-semibold">
+                        Memento will be automatically paused. You have to manually resume it!
+                    </p>
+                </div>
+            </div>
+
+            <div class="w-full p-6 mb-10 flex flex-col bg-white rounded-xl border border-gray-300">
+                <p class="text-red-600 text-sm font-semibold pb-4">
+                    This will erase everything from the database!
+                </p>
+
+                <form method="post" action="/reset" class="flex flex-col flex-start">
+                    <button class="px-4 py-2 bg-red-600 font-bold text-sm text-white rounded border border-red-600 hover:bg-red-700 hover:border-red-700 transition red-shadow">
                         Reset
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
+
         </div>
     </div>
 

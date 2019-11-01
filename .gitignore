@@ -34,3 +34,4 @@ config.yml
 memento
 .dump/
 .volumes
+/web/assets/css/tailwind.min.css
