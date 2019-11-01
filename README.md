@@ -6,6 +6,8 @@ The main goal of the tool is to scrape the raw data from the network, do the nec
 
 Seamless integration with the [Ethereum Lite Explorer by Alethio](https://github.com/Alethio/ethereum-lite-explorer) is coming soon to provide you the full blockchain exploration capabilities without the need of a third party.
 
+Easily check the system status, perform various actions and manage your configuration through the built-in dashboard.  
+
 ![memento dashboard](/web/assets/images/preview.png "Memento dashboard")
 
 ## Contents
