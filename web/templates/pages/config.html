@@ -1,39 +1,61 @@
 {{ define "config" }}
     {{ template "start" .nav }}
 
-    <div class="container pl-32 pr-12 mx-auto pt-10">
-        {{ template "page-title" dict "Title" "Configuration" "Icon" "file-settings-variant"}}
+    <div class="w-screen min-h-screen flex items-center justify-center px-4 sm:pl-32 sm:pr-12">
+        <div class="w-full max-w-4xl flex flex-col">
+            {{ template "page-title" dict "Title" "Configuration" "Icon" "file-settings-variant"}}
 
-        {{ template "errors" .errors }}
-        {{ template "success" .success }}
+            {{ template "errors" .errors }}
+            {{ template "success" .success }}
 
-        <div class="w-full p-6 mb-10 flex items-center bg-white rounded-xl border border-gray-300">
-            <div class="mr-4">
-                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
-                    <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+            <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+                <div class="mr-4">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                        <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <p class="text-blue-900 text-sm font-semibold">
+                        When saving the configuration, Memento will exit in order to apply the new settings. If you're
+                        running in docker, it should be restarted automatically
+                    </p>
                 </div>
             </div>
-            <div class="flex flex-col">
-                <p class="text-blue-900 text-sm font-semibold">
-                    When saving the configuration, Memento will exit in order to apply the new settings. If you're running in docker, it should be restarted automatically
-                </p>
-            </div>
+
+            <form method="post" action="/config" class="flex w-full flex-col">
+                <div class="flex flex-col sm:flex-wrap -mx-4" style="height: 1280px" id="config-wrapper">
+                    {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
+                </div>
+
+                <div class="my-2 flex">
+
+                    {{ template "form-button" "Save & restart" }}
+
+                    <input type="reset"
+                           class="px-4 py-2 mx-2 font-bold text-sm text-blue-900 border border-transparent bg-transparent cursor-pointer"
+                           value="Revert changes">
+                </div>
+            </form>
         </div>
-
-        <form method="post" action="/config" class="mt-4">
-            <div class="flex flex-wrap items-stretch -mx-4">
-                {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
-            </div>
-
-            <div class="my-2 flex">
-
-                {{ template "form-button" "Save & restart" }}
-
-                <input type="reset"
-                       class="px-4 py-2 mx-2 font-bold text-sm text-blue-900 border border-transparent bg-transparent cursor-pointer" value="Revert changes">
-            </div>
-        </form>
     </div>
+
+    <script>
+        el = document.getElementsByClassName("config-category")
+
+        var items = 3
+        if (window.innerWidth <= 640) {
+            items = el.length
+        }
+
+        var height = 0
+
+        for (i = 0; i < items; i++) {
+            height += el[i].offsetHeight
+        }
+
+        document.getElementById("config-wrapper").style.height = height + "px"
+
+    </script>
 
     {{ template "end" }}
 {{ end }}
@@ -45,7 +67,7 @@
     {{ range $key, $value := .Value }}
         {{ if isMap $value }}
             {{ if eq $step 0 }}
-                <div class="p-4 w-1/4 flex">
+                <div class="p-4 flex config-category">
                     <div class="rounded-xl p-6 bg-white w-full border border-gray-300">
                         <p class="font-semibold mb-4 uppercase text-blue-900">{{ $key }}</p>
 
@@ -61,7 +83,7 @@
             {{ end}}
         {{ else }}
             {{ if eq $step 0 }}
-                <div class="p-4 w-1/4 flex">
+                <div class="p-4 flex config-category">
                     <div class="rounded-xl p-6 bg-white w-full border border-gray-300">
                         <p class="font-semibold mb-4 uppercase text-blue-900">{{ $key }}</p>
 
@@ -85,9 +107,9 @@
                     <input id="toogle{{ .uid }}" type="checkbox"
                            class="hidden" {{ if eq .Value true }} checked {{end}} name="{{ .uid }}"/>
                     <!-- line -->
-                    <div class="toggle__line w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                    <div class="toggle__line w-12 h-6 bg-gray-400 rounded-full shadow-inner"></div>
                     <!-- dot -->
-                    <div class="toggle__dot absolute w-6 h-6 bg-gray-500 rounded-full shadow inset-y-0 left-0"></div>
+                    <div class="toggle__dot absolute w-4 h-4 bg-white rounded-full shadow inset-y-0 left-0"></div>
                 </div>
             </label>
         {{ else }}

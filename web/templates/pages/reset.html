@@ -1,8 +1,8 @@
 {{ define "reset" }}
     {{ template "start" .nav }}
 
-    <div class="w-screen min-h-screen flex items-center justify-center pl-32 pr-12">
-        <div class="w-full max-w-lg flex flex-col">
+    <div class="w-screen min-h-screen flex sm:items-center justify-center px-4 sm:pl-32 sm:pr-12">
+        <div class="w-full max-w-lg flex flex-col sm:mb-64">
             {{ template "page-title" dict "Title" "Reset Memento"}}
 
             <p class="text-blue-900 text-sm font-semibold mb-2">
@@ -18,7 +18,7 @@
             {{ template "errors" .errors }}
             {{ template "success" .success }}
 
-            <div class="w-full p-6 mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+            <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex items-center bg-white rounded-xl border border-gray-300">
                 <div class="mr-4">
                     <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
                         <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
@@ -37,7 +37,7 @@
                 </p>
 
                 <form method="post" action="/reset" class="flex flex-col flex-start">
-                    <button class="px-4 py-2 bg-red-600 font-bold text-sm text-white rounded border border-red-600 hover:bg-white hover:text-red-600 transition blue-shadow">
+                    <button class="px-4 py-2 bg-red-600 font-bold text-sm text-white rounded border border-red-600 hover:bg-red-700 hover:border-red-700 transition red-shadow">
                         Reset
                     </button>
                 </form>

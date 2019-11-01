@@ -1,4 +1,4 @@
-FROM golang:1.12.9 AS build
+FROM golang:1.13.3 AS build
 
 RUN mkdir -p /memento
 WORKDIR /memento

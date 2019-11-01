@@ -1,6 +1,7 @@
 body {
     background: #F0F4F8;
     font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
 }
 
 .logo-text {
@@ -56,12 +57,15 @@ button,input {
 }
 
 .toggle__dot {
-    top: -.25rem;
-    left: -.25rem;
+    top: .25rem;
+    left: .25rem;
     transition: all 0.3s ease-in-out;
 }
 
 input:checked ~ .toggle__dot {
-    transform: translateX(100%);
-    background-color: #48bb78;
+    transform: translateX(150%);
+}
+
+input:checked ~ .toggle__line {
+    background-color: #3A66DB;
 }

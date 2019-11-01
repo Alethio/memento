@@ -1,14 +1,14 @@
 {{ define "queue" }}
     {{ template "start" .nav }}
 
-        <div class="w-screen min-h-screen flex items-center justify-center pl-32 pr-12">
-            <div class="w-full max-w-lg flex flex-col">
+        <div class="w-screen min-h-screen flex sm:items-center justify-center px-4 sm:pl-32 sm:pr-12">
+            <div class="w-full max-w-lg flex flex-col sm:mb-64">
                 {{ template "page-title" dict "Title" "Queue blocks" }}
 
                 {{ template "errors" .errors }}
                 {{ template "success" .success }}
 
-                <div class="w-full p-6 mb-10 bg-white rounded-xl border border-gray-300">
+                <div class="w-full p-6 mb-6 sm:mb-10 bg-white rounded-xl border border-gray-300">
                     <p class="font-semibold text-blue-900">Queue single block</p>
                     <p class="text-gray-500 text-sm">Add a single block to the TODO list</p>
 
