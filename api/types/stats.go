@@ -1,26 +1,25 @@
 package types
 
-type Stat struct {
-	Name  string
-	Value string
-	Icon  string
-	Color string
-}
-
 type DBEntries struct {
-	Blocks, Txs, LogEntries, Uncles Stat
+	Blocks, Txs, LogEntries, Uncles string
 }
 
 type DBStats struct {
-	DataSize, IndexesSize, TotalSize, MigrationsVersion, MaxBlock Stat
+	DataSize, IndexesSize, TotalSize, MigrationsVersion, MaxBlock string
+
+	RawDataSize, RawIndexesSize int64
 }
 
 type ProcStats struct {
-	ReorgedBlocks, InvalidBlocks, MemoryUsage, TodoLength, Version Stat
+	ReorgedBlocks, InvalidBlocks, MemoryUsage, TodoLength, Version, PercentageDone string
 }
 
 type TimingStats struct {
-	ProcessingTime, ScrapingTime, IndexingTime Stat
+	// human readable format
+	ProcessingTime, ScrapingTime, IndexingTime string
+
+	// value in ms
+	RawProcessingTime, RawScrapingTime, RawIndexingTime int64
 }
 
 type Nav struct {

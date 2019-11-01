@@ -20,8 +20,12 @@ button,input {
 }
 
 
-.block-shadow {
+.blue-shadow {
     box-shadow: 0 8px 16px 0 rgba(0, 74, 255, 0.22);
+}
+
+.red-shadow {
+    box-shadow: 0 8px 16px 0 rgba(214,69,69,0.19);
 }
 
 .rounded-xl {

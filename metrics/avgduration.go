@@ -22,6 +22,11 @@ func (p *AverageDuration) String() string {
 	return d.Round(time.Millisecond).String()
 }
 
+func (p *AverageDuration) Raw() int64 {
+	d, _ := time.ParseDuration(fmt.Sprintf("%dns", p.RollingAvg))
+	return d.Round(time.Millisecond).Milliseconds()
+}
+
 func (p *AverageDuration) Reset() {
 	p.RollingAvg = 0
 	p.Measurements = 0

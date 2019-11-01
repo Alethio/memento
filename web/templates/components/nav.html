@@ -4,33 +4,15 @@
             <img src="/web/assets/images/logo.svg" class="w-10" alt="logo"/>
         </a>
         <ul class="flex flex-col text-2xl w-full">
-            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/" "Icon" "home" "Name" "Home"}}
-            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/queue" "Icon" "clipboard-list-outline" "Name" "Queue blocks"}}
-            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/pause" "Icon" "play-pause" "Name" "Start/stop"}}
-            {{ template "nav-item" dict "Color" "text-grey-500" "Hover" "blue-900" "Href" "/config"  "Icon" "file-settings-variant" "Name" "Configuration"}}
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/" "Icon" "home" "Name" "Home"}}
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/queue" "Icon" "clipboard-list-outline" "Name" "Queue blocks"}}
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/pause" "Icon" "play-pause" "Name" "Start/stop"}}
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/config"  "Icon" "file-settings-variant" "Name" "Configuration"}}
         </ul>
         <ul class="flex flex-col text-2xl w-full">
             {{ template "nav-item" dict "Color" "text-red-500" "Hover" "red-700" "Href" "/reset"  "Icon" "restart" "Name" "Reset"}}
         </ul>
     </nav>
-    <div class="fixed bottom-0 right-0 flex flex-col items-center mb-8 mr-8">
-        <div class="flex items-center w-full mb-4 bg-white rounded-xl px-4 py-2">
-            {{ template "label" "Status"}}
-            {{ with .Paused }}
-                <p class="text-blue-900">
-                    paused
-                </p>
-            {{ else }}
-                <p class="text-green-500">
-                    running
-                </p>
-            {{ end }}
-        </div>
-        <div class="flex items-center bg-white rounded-xl px-4 py-2">
-            {{ template "label" "Latest block"}}
-            {{ template "block" .Latest }}
-        </div>
-    </div>
 {{ end }}
 
 {{ define "nav-item" }}

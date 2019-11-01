@@ -1,26 +1,36 @@
 {{ define "config" }}
     {{ template "start" .nav }}
 
-    <div class="container pl-32 pr-12 mx-auto">
+    <div class="container pl-32 pr-12 mx-auto pt-10">
         {{ template "page-title" dict "Title" "Configuration" "Icon" "file-settings-variant"}}
 
         {{ template "errors" .errors }}
         {{ template "success" .success }}
 
-        {{ template "info" "When saving the configuration, Memento will exit in order to apply the new settings. If you're running in docker, it should be restarted automatically" }}
+        <div class="w-full p-6 mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+            <div class="mr-4">
+                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                    <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <p class="text-blue-900 text-sm font-semibold">
+                    When saving the configuration, Memento will exit in order to apply the new settings. If you're running in docker, it should be restarted automatically
+                </p>
+            </div>
+        </div>
 
         <form method="post" action="/config" class="mt-4">
-            <div class="flex flex-wrap items-stretch -mx-2">
+            <div class="flex flex-wrap items-stretch -mx-4">
                 {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
             </div>
 
-            <div class="my-2 flex -mx-2">
-                <button class="px-4 py-2 mx-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
-                    Save & restart
-                </button>
+            <div class="my-2 flex">
+
+                {{ template "form-button" "Save & restart" }}
 
                 <input type="reset"
-                       class="px-4 py-2 mx-2 font-bold text-sm text-blue-900 border border-transparent bg-transparent cursor-pointer">
+                       class="px-4 py-2 mx-2 font-bold text-sm text-blue-900 border border-transparent bg-transparent cursor-pointer" value="Revert changes">
             </div>
         </form>
     </div>
@@ -35,24 +45,24 @@
     {{ range $key, $value := .Value }}
         {{ if isMap $value }}
             {{ if eq $step 0 }}
-                <div class="p-2 w-1/4 flex">
-                    <div class="rounded-xl px-8 py-4 bg-white w-full shadow">
+                <div class="p-4 w-1/4 flex">
+                    <div class="rounded-xl p-6 bg-white w-full border border-gray-300">
                         <p class="font-semibold mb-4 uppercase text-blue-900">{{ $key }}</p>
 
                         {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "uid" (printf "%s.%s" $uid $key) }}
                     </div>
                 </div>
             {{ else }}
-                <div class="ml-{{ times $step 4 }} my-4">
-                    <p class="text-blue-900">{{ $key }}</p>
+                <div class="ml-{{ times (plus $step -1) 4 }} my-4">
+                    <p class="text-blue-900 text-sm font-semibold">{{ $key }}</p>
 
                     {{ template "recursive-config" dict "Value" $value "Step" (plus $step 1) "uid" (printf "%s.%s" $uid $key) }}
                 </div>
             {{ end}}
         {{ else }}
             {{ if eq $step 0 }}
-                <div class="p-2 w-1/4 flex">
-                    <div class="rounded-xl px-8 py-4 bg-white w-full shadow">
+                <div class="p-4 w-1/4 flex">
+                    <div class="rounded-xl p-6 bg-white w-full border border-gray-300">
                         <p class="font-semibold mb-4 uppercase text-blue-900">{{ $key }}</p>
 
                         {{ template "config-value" dict "Label" $key "Value" $value "Step" $step "uid" (printf "%s.%s" $uid $key) }}
@@ -66,8 +76,8 @@
 {{ end }}
 
 {{ define "config-value" }}
-    <div class="flex flex-col ml-{{ times .Step 4 }} my-1">
-        <p class="text-grey-600 mr-4">{{ .Label }}:</p>
+    <div class="flex flex-col ml-{{ times (plus .Step -1) 4 }} my-3">
+        <p class="text-gray-500 text-sm">{{ .Label }}</p>
 
         {{ if eq (printf "%T" .Value) "bool" }}
             <label for="toogle{{ .uid }}" class="flex items-center cursor-pointer my-2">
@@ -82,7 +92,7 @@
             </label>
         {{ else }}
             <input type="text" value="{{ .Value }}" name="{{ .uid }}"
-                   class="px-4 py-2 my-2 border border-white hover:border-blue-500 focus:border-blue-500 transition rounded-xl text-blue-900 border-grey-500">
+                   class="w-full px-4 py-2 border border-gray-300 hover:border-blue-500 focus:border-blue-500 transition rounded text-blue-900 text-sm">
         {{ end }}
     </div>
 {{ end }}

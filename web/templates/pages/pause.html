@@ -1,27 +1,40 @@
 {{ define "pause" }}
     {{ template "start" .nav }}
 
-    <div class="container pl-32 pr-12 mx-auto">
-        {{ template "page-title" dict "Title" "Start/stop" "Icon" "play-pause"}}
+    <div class="w-screen min-h-screen flex items-center justify-center pl-32 pr-12">
+        <div class="w-full max-w-lg flex flex-col">
+            {{ template "page-title" dict "Title" "Start/Stop"}}
 
-        {{ template "info" "While Memento is paused, it will not scrape any new block that is mined on the network." }}
-        {{ template "info" "If the backfilling feature is disabled, new blocks mined on the network while Memento is paused will not be indexed!" }}
+            <div class="w-full p-6 mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+                <div class="mr-4">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                        <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <p class="text-blue-900 text-sm font-semibold mb-2">
+                        While Memento is paused, it will not scrape any new block that is mined on the network.
+                    </p>
+                    <p class="text-blue-900 text-sm font-semibold">
+                        If the backfilling feature is disabled, new blocks mined on the network while Memento is paused will not be indexed!
+                    </p>
+                </div>
+            </div>
 
-        <div class="flex mt-8">
-            <p class="px-4 py-2 mr-4 bg-white text-blue-900 rounded-xl">
-                <span class="mr-4">Current status:</span>
-                {{ with .nav.Paused }}
-                    <span class="text-blue-900 font-bold">paused</span>
-                {{ else }}
-                    <span class="text-green-500 font-bold">running</span>
-                {{ end }}
-            </p>
+            <div class="w-full p-6 mb-10 flex flex-col bg-white rounded-xl border border-gray-300">
+                <p class="text-blue-900 text-sm font-semibold pb-4">
+                    <span class="mr-4">Current status:</span>
+                    {{ with .nav.Paused }}
+                        <span class="text-gray-500 font-bold">Paused</span>
+                    {{ else }}
+                        <span class="text-green-500 font-bold">Running</span>
+                    {{ end }}
+                </p>
 
-            <form method="post" action="/pause">
-                <button class="px-4 py-2 bg-blue-500 font-bold text-sm text-white rounded-xl border border-blue-500 hover:bg-white hover:text-blue-500 transition">
-                    Toggle status
-                </button>
-            </form>
+                <form method="post" action="/pause" class="w-full flex flex-col flex-start">
+                    {{ template "form-button" "Toggle status" }}
+                </form>
+            </div>
         </div>
     </div>
 
