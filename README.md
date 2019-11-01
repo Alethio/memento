@@ -6,6 +6,8 @@ The main goal of the tool is to scrape the raw data from the network, do the nec
 
 Seamless integration with the [Ethereum Lite Explorer by Alethio](https://github.com/Alethio/ethereum-lite-explorer) is coming soon to provide you the full blockchain exploration capabilities without the need of a third party.
 
+![memento dashboard](/web/assets/images/preview.png "Memento dashboard")
+
 ## Contents
 - [Memento - Ethereum scraper and indexer](#memento---ethereum-scraper-and-indexer)
   - [Features](#features)
@@ -158,7 +160,8 @@ time="2019-09-04T11:53:15Z" level=info msg="[core] done processing block" block=
 ```
 
 #### Result
-After the program started, it will start following the best block from the network, scraping the data and indexing it into postgres. It will also expose an API, by default on port `3001` (configurable). 
+After the program started, it will start following the best block from the network, scraping the data and indexing it into postgres. 
+It automatically exposes the dashboard on port `3001`. You can also use the api on `:3001/api/explorer`. 
 
 
 ### Example setups

@@ -8,7 +8,7 @@ import (
 )
 
 func (a *API) setRoutes() {
-	explorer := a.engine.Group("/explorer")
+	explorer := a.engine.Group("/api/explorer")
 	explorer.GET("/block/:block", a.BlockHandler)
 	explorer.GET("/block-range/:start/:end", a.BlockRangeHandler)
 	explorer.GET("/uncle/:hash", a.UncleDetailsHandler)
