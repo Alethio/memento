@@ -8,7 +8,7 @@ import (
 func (a *API) getBlockTxs(number int64) ([]types.Tx, error) {
 	var txs = make([]types.Tx, 0)
 
-	rows, err := a.db.Query(`select tx_index, tx_hash, value, "from", "to", msg_gas_limit, tx_gas_used, tx_gas_price from txs where included_in_block = $1 order by tx_index`, number)
+	rows, err := a.core.DB().Query(`select tx_index, tx_hash, value, "from", "to", msg_gas_limit, tx_gas_used, tx_gas_price from txs where included_in_block = $1 order by tx_index`, number)
 	if err != nil {
 		log.Error(err)
 		return nil, err

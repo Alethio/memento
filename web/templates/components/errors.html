@@ -1,0 +1,9 @@
+{{ define "errors" }}
+    {{ with . }}
+        <div class="flex flex-col -my-2 mb-10">
+            {{ range . }}
+                <div class="bg-red-500 text-white px-4 py-2 my-2 rounded-xl">{{ . }}</div>
+            {{ end }}
+        </div>
+    {{ end }}
+{{ end }}

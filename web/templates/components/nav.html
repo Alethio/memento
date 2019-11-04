@@ -1,0 +1,30 @@
+{{ define "nav" }}
+    <nav class="fixed bottom-0 sm:top-0 left-0 w-screen sm:w-20 h-20 sm:h-screen flex sm:flex-col items-center sm:justify-between bg-white z-30 border-t sm:border-t-0 sm:border-r border-gray-300">
+        <a href="/" class="hidden sm:flex justify-center w-full px-4 py-6">
+            <img src="/web/assets/images/logo.svg" class="w-10" alt="logo"/>
+        </a>
+        <ul class="flex sm:flex-col text-xl sm:text-2xl w-4/5 sm:w-full">
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/" "Icon" "home" "Name" "Home"}}
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/queue" "Icon" "clipboard-list-outline" "Name" "Queue blocks"}}
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/pause" "Icon" "play-pause" "Name" "Start/stop"}}
+            {{ template "nav-item" dict "Color" "text-gray-500" "Hover" "blue-900" "Href" "/config"  "Icon" "file-settings-variant" "Name" "Configuration"}}
+        </ul>
+        <ul class="flex text-xl sm:text-2xl w-1/5 sm:w-full">
+            {{ template "nav-item" dict "Color" "text-red-500" "Hover" "red-700" "Href" "/reset"  "Icon" "restart" "Name" "Reset"}}
+        </ul>
+    </nav>
+{{ end }}
+
+{{ define "nav-item" }}
+    <li class="w-full flex items-center">
+        <a href="{{ .Href }}"
+           class="w-full m-4 rounded-xl flex items-center justify-center hover:bg-gray-200 hover:text-{{ .Hover }} transition {{ .Color }} menu-item">
+            <span class="mdi mdi-{{ .Icon }} py-2"></span>
+            <div class="px-4 py-2 absolute whitespace-no-wrap bg-{{ .Hover }} text-white shadow text-sm rounded-lg floating-label hidden sm:flex items-center"
+                 style="left: 96px;">
+                <span class="caret absolute caret-{{ .Hover }}"></span>
+                {{ .Name }}
+            </div>
+        </a>
+    </li>
+{{ end }}

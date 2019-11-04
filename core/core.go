@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pressly/goose"
+	"github.com/Alethio/memento/metrics"
 
-	"github.com/Alethio/memento/api"
+	"github.com/pressly/goose"
 
 	"github.com/alethio/web3-go/validator"
 
@@ -23,11 +23,11 @@ var log = logrus.WithField("module", "core")
 type Core struct {
 	config Config
 
+	metrics     *metrics.Provider
 	bbtracker   *bestblock.Tracker
 	taskmanager *taskmanager.Manager
 	scraper     *scraper.Scraper
 	db          *sql.DB
-	api         *api.API
 
 	stopMu sync.Mutex
 }
@@ -52,12 +52,15 @@ func New(config Config) *Core {
 		}
 	}()
 
+	m := metrics.New()
+	m.RecordLatestBlock(bbtracker.BestBlock())
+
 	var lag int64
 	if config.Features.Lag.Enabled {
 		lag = config.Features.Lag.Value
 	}
 
-	tm, err := taskmanager.New(bbtracker, lag, config.TaskManager)
+	tm, err := taskmanager.New(bbtracker, lag, m, config.TaskManager)
 	if err != nil {
 		log.Fatal("could not start task manager")
 	}
@@ -89,54 +92,58 @@ func New(config Config) *Core {
 
 	log.Info("connected to postgres successfuly")
 
-	a := api.New(db, config.API)
-
 	return &Core{
 		config:      config,
+		metrics:     m,
 		bbtracker:   bbtracker,
 		taskmanager: tm,
 		scraper:     s,
 		db:          db,
-		api:         a,
 	}
 }
 
 func (c *Core) Run() {
-	go c.api.Start()
-
 	blockChan := make(chan int64)
 
-	max, err := c.getHighestBlock()
-	if err != nil {
-		log.Fatal("could not get highest block from db:", err)
-	}
+	go func() {
+		for b := range c.bbtracker.Subscribe() {
+			c.Metrics().RecordLatestBlock(b)
+		}
+	}()
 
-	log.WithField("block", max).Info("got highest block from db")
-
-	best := c.bbtracker.BestBlock()
-
-	log.WithField("block", best).Info("got highest block from network")
-
-	if c.config.Features.Backfill {
-		var lag int64
-		if c.config.Features.Lag.Enabled {
-			lag = c.config.Features.Lag.Value
+	go func() {
+		max, err := c.getHighestBlock()
+		if err != nil {
+			log.Fatal("could not get highest block from db:", err)
 		}
 
-		backfillTarget := best - lag
+		log.WithField("block", max).Info("got highest block from db")
 
-		if max+1 < backfillTarget {
-			log.Infof("adding tasks for %d blocks to be backfilled", backfillTarget-max+1)
-			for i := max; i <= backfillTarget; i++ {
-				err := c.taskmanager.Todo(i)
-				if err != nil {
-					log.Fatal("could not add task:", err)
+		best := c.bbtracker.BestBlock()
+
+		log.WithField("block", best).Info("got highest block from network")
+
+		if c.config.Features.Backfill {
+			var lag int64
+			if c.config.Features.Lag.Enabled {
+				lag = c.config.Features.Lag.Value
+			}
+
+			backfillTarget := best - lag
+
+			if max+1 < backfillTarget {
+				log.Infof("adding tasks for %d blocks to be backfilled", backfillTarget-max+1)
+				for i := max; i <= backfillTarget; i++ {
+					err := c.taskmanager.Todo(i)
+					if err != nil {
+						log.Fatal("could not add task:", err)
+					}
 				}
 			}
+		} else {
+			log.Info("skipping backfilling since feature is disabled")
 		}
-	} else {
-		log.Info("skipping backfilling since feature is disabled")
-	}
+	}()
 
 	go c.taskmanager.FeedToChan(blockChan)
 
@@ -158,6 +165,8 @@ func (c *Core) Run() {
 				continue
 			}
 
+			c.metrics.RecordScrapingTime(time.Since(start))
+
 			log.Debug("validating block")
 			v := validator.New()
 			v.LoadBlock(blk.Block)
@@ -167,6 +176,7 @@ func (c *Core) Run() {
 			_, err = v.Run()
 			if err != nil {
 				c.stopMu.Unlock()
+				c.metrics.RecordInvalidBlock()
 				log.Error("error validating block: ", err)
 				err1 := c.taskmanager.Todo(b)
 				if err1 != nil {
@@ -177,8 +187,10 @@ func (c *Core) Run() {
 			log.Debug("block is valid")
 
 			log.Debug("storing block into the database")
+
+			indexingStart := time.Now()
 			blk.RegisterStorables()
-			err = blk.Store(c.db)
+			err = blk.Store(c.db, c.metrics)
 			if err != nil {
 				c.stopMu.Unlock()
 				log.Error("error storing block: ", err)
@@ -188,6 +200,8 @@ func (c *Core) Run() {
 				}
 				continue
 			}
+			c.metrics.RecordIndexingTime(time.Since(indexingStart))
+			c.metrics.RecordProcessingTime(time.Since(start))
 			log.WithField("duration", time.Since(start)).Info("done processing block")
 			c.stopMu.Unlock()
 		}

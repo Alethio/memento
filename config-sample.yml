@@ -1,3 +1,23 @@
+# api-related fields
+api:
+  # The port on which the API will be exposed (default:3001)
+  port: 3001
+
+  # Enable/disable development CORS
+  dev-cors: true
+
+  # Allowed hosts for HTTP API development CORS
+  dev-cors-host: "*"
+
+# Dashboard-related fields
+dashboard:
+  # The port on which the Dashboard will be exposed (default:3000)
+  # WARNING: it must not be the same as api.port!
+  port: 3000
+
+  config-management:
+    enabled: true
+
 # database fields
 db:
   # Database host
@@ -30,25 +50,6 @@ eth:
     # optional, only used if `ws` url is not specified
     poll-interval: "15s"
 
-# redis-related fields
-redis:
-  # URL of redis server (default:"localhost:6379")
-  server: "memento-redis:6379"
-
-  # The name of the redis list the scraper will use for task management (default: "todo")
-  list: "todo"
-
-# api-related fields
-api:
-  # The port on which the API will be exposed (default:3001)
-  port: 3001
-
-  # Enable/disable development CORS
-  dev-cors: true
-
-  # Allowed hosts for HTTP API development CORS
-  dev-cors-host: "*"
-
 # feature flags
 feature:
   # Backfilling
@@ -73,3 +74,15 @@ feature:
   uncles:
     # Enable/disabled the uncles scraping
     enabled: true
+
+# Control what to be logged using format "module=level,module=level"; `*` means all other modules
+logging: "*=info"
+
+# redis-related fields
+redis:
+  # URL of redis server (default:"localhost:6379")
+  server: "memento-redis:6379"
+
+  # The name of the redis list the scraper will use for task management (default: "todo")
+  list: "todo"
+

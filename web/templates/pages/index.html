@@ -1,0 +1,219 @@
+{{ define "index" }}
+    {{ template "start" .nav }}
+
+    <div class="container px-4 sm:pl-32 sm:pr-12 mx-auto mb-24 sm:mb-0">
+        {{ template "errors" .errors }}
+
+        <div class="flex flex-col mt-6 sm:mt-16">
+            <h2 class="text-blue-900 text-lg font-bold mb-6">Overview</h2>
+            <div class="flex flex-wrap sm:items-stretch -mt-2 -mx-2 sm:-mt-4 sm:-mx-4">
+                <div class="flex flex-wrap w-full sm:w-1/2">
+                    <div class="flex w-1/2">
+                        {{ template "stat" dict "Name" "Highest block in db" "Icon" "cube-send" "Color" "blue" "Value" .dbStats.MaxBlock }}
+                    </div>
+                    <div class="flex w-1/2">
+                        {{ template "stat" dict "Name" "Blocks scraped" "Icon" "cube-outline" "Color" "blue" "Value" .dbEntries.Blocks }}
+                    </div>
+                    <div class="flex w-1/2">
+                        {{ template "stat-highlight" dict "Name" "Latest block" "Icon" "cube-scan" "Color" "blue" "Value" .nav.Latest }}
+                    </div>
+                    <div class="flex w-1/2">
+                        {{ if eq .nav.Paused true }}
+                            {{ template "stat-highlight" dict "Name" "Status" "Icon" "power" "Color" "gray" "Value" "paused" }}
+                        {{ else }}
+                            {{ template "stat-highlight" dict "Name" "Status" "Icon" "power" "Color" "green" "Value" "running" }}
+                        {{ end }}
+                    </div>
+                </div>
+                <div class="flex items-stretch w-full sm:w-1/2">
+                    <div class="bg-white rounded-xl border border-gray-300 w-full py-4 flex flex-col items-center m-2 sm:m-4">
+                        <div class="w-full h-32 sm:h-48 relative flex items-end justify-center">
+                            <div class="flex flex-col items-center">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-100">
+                                    <span class="mdi mdi-clipboard-list-outline text-xl sm:text-2xl text-indigo-500"></span>
+                                </div>
+                                <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight mt-2 sm:mt-4">{{ .procStats.TodoLength }}</p>
+                                <p class="text-gray-500 text-xs font-semibold">Tasks in todo</p>
+                            </div>
+
+                            <div class="h-32 w-1/2 absolute top-0" id="progress-container"></div>
+                        </div>
+                        <div class="flex w-full justify-center">
+                            <div class="flex flex-col items-center justify-center px-6">
+                                <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight mt-2 sm:mt-4">{{ .procStats.ReorgedBlocks }}</p>
+                                <p class="text-gray-500 text-xs font-semibold">Reorganized blocks</p>
+                            </div>
+                            <div class="flex flex-col items-center justify-center px-6">
+                                <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight mt-2 sm:mt-4">{{ .procStats.InvalidBlocks }}</p>
+                                <p class="text-gray-500 text-xs font-semibold">Validation fails</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap mt-6 sm:mt-16 sm:items-stretch">
+            <div class="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0">
+                <h2 class="text-blue-900 text-lg font-bold mb-6">Processing stats</h2>
+
+                <div class="flex w-full sm:pr-4">
+                    <div class="bg-white rounded-xl border border-gray-300 w-full py-8 sm:py-16 px-10 flex flex-wrap justify-center sm:flex-auto sm:items-stretch">
+                        <div class="w-full sm:w-1/2 h-48 sm:h-64 relative flex items-center justify-center sm:mr-6">
+                            <div class="flex flex-col items-center">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100">
+                                    <span class="mdi mdi-clock-outline text-xl sm:text-2xl text-red-500"></span>
+                                </div>
+                                <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight mt-4">{{ .timingStats.ProcessingTime }}</p>
+                                <p class="text-gray-500 text-xs font-semibold">Total time/block</p>
+                            </div>
+
+                            <div class="absolute h-full">
+                                <canvas id="processing-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="flex sm:flex-col sm:justify-center mt-4 sm:mt-0">
+                            <div class="flex sm:mb-6 mr-4 sm:mr-0">
+                                {{ template "stat-inline-chart" dict "Name" "Scraping time / block" "Color" "#9B2C2C" "Value" .timingStats.ScrapingTime }}
+                            </div>
+
+                            <div class="flex">
+                                {{ template "stat-inline-chart" dict "Name" "Indexing time / block" "Color" "#F56565" "Value" .timingStats.IndexingTime }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col w-full sm:w-1/2">
+                <h2 class="text-blue-900 text-lg font-bold mb-6 sm:ml-4">Database stats</h2>
+
+                <div class="flex w-full sm:pl-4">
+                    <div class="bg-white rounded-xl border border-gray-300 w-full py-8 sm:py-16 px-10 flex flex-wrap justify-center sm:flex-auto sm:items-stretch">
+                        <div class="w-full sm:w-1/2 h-48 sm:h-64 relative flex items-center justify-center sm:mr-6">
+                            <div class="flex flex-col items-center">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                                    <span class="mdi mdi-database text-xl sm:text-2xl text-orange-500"></span>
+                                </div>
+                                <p class="text-blue-900 text-xl sm:text-2xl font-bold leading-tight mt-4">{{ .dbStats.TotalSize }}</p>
+                                <p class="text-gray-500 text-xs font-semibold">Total size</p>
+                            </div>
+
+                            <div class="absolute h-full">
+                                <canvas id="database-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="flex sm:flex-col justify-center mt-4 sm:mt-0">
+                            <div class="flex sm:mb-6 mr-4 sm:mr-0">
+                                {{ template "stat-inline-chart" dict "Name" "Data size" "Color" "#9C4221" "Value" .dbStats.DataSize }}
+                            </div>
+
+                            <div class="flex">
+                                {{ template "stat-inline-chart" dict "Name" "Indexes size" "Color" "#ED8936" "Value" .dbStats.IndexesSize }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col mt-6 sm:mt-16 mb-6">
+            <h2 class="text-blue-900 text-lg font-bold mb-6">Indexed entities</h2>
+            <div class="flex">
+                <div class="bg-white rounded-xl border border-gray-300 w-full py-4 px-10 flex items-center flex-wrap sm:flex-auto">
+                    <div class="w-1/2 sm:w-1/4 my-2 sm:my-0 flex items-center">
+                        {{ template "stat-inline" dict "Name" "Blocks" "Icon" "cube-outline" "Color" "green" "Value" .dbEntries.Blocks }}
+                    </div>
+                    <div class="w-1/2 sm:w-1/4 my-2 sm:my-0 flex items-center">
+                        {{ template "stat-inline" dict "Name" "Transactions" "Icon" "swap-horizontal-circle-outline" "Color" "green" "Value" .dbEntries.Txs }}
+                    </div>
+                    <div class="w-1/2 sm:w-1/4 my-2 sm:my-0 flex items-center">
+                        {{ template "stat-inline" dict "Name" "Log entries" "Icon" "file-outline" "Color" "green" "Value" .dbEntries.LogEntries }}
+                    </div>
+                    <div class="w-1/2 sm:w-1/4 my-2 sm:my-0 flex items-center">
+                        {{ template "stat-inline" dict "Name" "Uncles" "Icon" "file-tree" "Color" "green" "Value" .dbEntries.Uncles }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.1/dist/Chart.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1/dist/Chart.min.js"></script>
+    {{ template "todo-progress" .procStats.PercentageDone }}
+    {{ template "processing-chart" .timingStats }}
+    {{ template "database-chart" .dbStats }}
+    {{ template "end" }}
+{{ end }}
+
+{{ define "processing-chart" }}
+    <script>
+        data = {
+            datasets: [{
+                data: [{{.RawScrapingTime}}, {{.RawIndexingTime}}],
+                backgroundColor: ["#9B2C2C", "#F56565"]
+            }]
+        };
+
+        var ctx = document.getElementById("processing-chart")
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: {
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    enabled: false,
+                },
+                cutoutPercentage: 85,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+{{ end }}
+
+{{ define "database-chart" }}
+    <script>
+        data = {
+            datasets: [{
+                data: [{{.RawDataSize}}, {{.RawIndexesSize}}],
+                backgroundColor: ["#9C4221", "#ED8936"]
+            }]
+        };
+
+        var ctx = document.getElementById("database-chart")
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: data,
+            options: {
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    enabled: false,
+                },
+                cutoutPercentage: 85,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+{{ end }}
+
+{{ define "todo-progress" }}
+    <script src="/web/assets/js/progressbar.min.js"></script>
+    <script>
+        var bar = new ProgressBar.SemiCircle(document.getElementById("progress-container"), {
+            strokeWidth: 6,
+            easing: 'easeInOut',
+            duration: 1400,
+            color: '#667EEA',
+            trailColor: '#EBF4FF',
+            trailWidth: 1,
+            svgStyle: null
+        });
+
+        bar.animate({{ . }});
+    </script>
+{{ end }}

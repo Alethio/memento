@@ -1,0 +1,42 @@
+{{ define "pause" }}
+    {{ template "start" .nav }}
+
+    <div class="w-screen min-h-screen flex sm:items-center justify-center px-4 sm:pl-32 sm:pr-12">
+        <div class="w-full max-w-lg flex flex-col mb-24 sm:mb-64">
+            {{ template "page-title" dict "Title" "Start/Stop"}}
+
+            <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+                <div class="mr-4">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                        <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <p class="text-blue-900 text-sm font-semibold mb-2">
+                        While Memento is paused, it will not scrape any new block that is mined on the network.
+                    </p>
+                    <p class="text-blue-900 text-sm font-semibold">
+                        If the backfilling feature is disabled, new blocks mined on the network while Memento is paused will not be indexed!
+                    </p>
+                </div>
+            </div>
+
+            <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex flex-col bg-white rounded-xl border border-gray-300">
+                <p class="text-blue-900 text-sm font-semibold pb-4">
+                    <span class="mr-4">Current status:</span>
+                    {{ with .nav.Paused }}
+                        <span class="text-gray-500 font-bold">Paused</span>
+                    {{ else }}
+                        <span class="text-green-500 font-bold">Running</span>
+                    {{ end }}
+                </p>
+
+                <form method="post" action="/pause" class="w-full flex flex-col flex-start">
+                    {{ template "form-button" "Toggle status" }}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{ template "end" }}
+{{ end }}

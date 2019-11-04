@@ -1,0 +1,28 @@
+{{ define "start" }}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="theme-color" content="#ffffff">
+        <title>memento</title>
+        <link rel="shortcut icon" href="/web/assets/images/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/web/assets/images/favicon.ico" type="image/x-icon">
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Barlow:500,600,700,800|Montserrat:700&display=swap"
+              rel="stylesheet">
+        <link href="https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="/web/assets/css/index.css" rel="stylesheet"/>
+        <link href="/web/assets/css/tailwind-overwrite.css" rel="stylesheet"/>
+    </head>
+    <body>
+
+    <div style="position:fixed; width: 100vw; height: 100vh; background-color: #fff; z-index: 50; top: 0; left: 0; display: flex; justify-content: center; align-items: center; transition: all 0.5s;"
+         id="splash">
+        <img src="/web/assets/images/logo.svg" style="width: 128px;" alt="logo"/>
+    </div>
+
+    {{ template "nav" . }}
+{{ end }}

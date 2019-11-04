@@ -1,0 +1,71 @@
+body {
+    background: #F0F4F8;
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+}
+
+.logo-text {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.container {
+    max-width: 1600px;
+}
+
+.transition {
+    transition: 0.5s;
+}
+
+button,input {
+    outline: none !important;
+}
+
+
+.blue-shadow {
+    box-shadow: 0 8px 16px 0 rgba(0, 74, 255, 0.22);
+}
+
+.red-shadow {
+    box-shadow: 0 8px 16px 0 rgba(214,69,69,0.19);
+}
+
+.rounded-xl {
+    border-radius: 12px;
+}
+
+.menu-item > .floating-label {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms;
+}
+
+.menu-item:hover > .floating-label {
+    opacity: 1;
+}
+
+.caret {
+    left: -6px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 6px 6px 0;
+    border-color: transparent #273556 transparent transparent;
+}
+
+.caret.caret-red-700 {
+    border-color: transparent #c53030 transparent transparent;
+}
+
+.toggle__dot {
+    top: .25rem;
+    left: .25rem;
+    transition: all 0.3s ease-in-out;
+}
+
+input:checked ~ .toggle__dot {
+    transform: translateX(150%);
+}
+
+input:checked ~ .toggle__line {
+    background-color: #3A66DB;
+}

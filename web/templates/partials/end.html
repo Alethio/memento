@@ -1,0 +1,25 @@
+{{ define "end" }}
+    <script>
+        i = setInterval(function () {
+            el = document.getElementsByClassName("mdi")
+            if (el.item(el.length-1).offsetWidth !== 0) {
+                document.getElementById("splash").style.opacity = "0"
+                document.getElementById("splash").style.pointerEvents = "none"
+                clearInterval(i)
+            }
+        }, 500)
+
+        var els = document.querySelectorAll("nav>ul>li>a[href='"+window.location.pathname+"']")[0];
+        els.classList.add("bg-gray-200")
+
+        if (els.classList.contains("text-red-500")) {
+            els.classList.remove("text-red-500")
+            els.classList.add("text-red-900")
+        } else {
+            els.classList.remove("text-grey-500")
+            els.classList.add("text-blue-900")
+        }
+    </script>
+    </body>
+    </html>
+{{ end }}

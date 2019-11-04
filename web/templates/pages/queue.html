@@ -1,0 +1,59 @@
+{{ define "queue" }}
+    {{ template "start" .nav }}
+
+        <div class="w-screen min-h-screen flex sm:items-center justify-center px-4 sm:pl-32 sm:pr-12">
+            <div class="w-full max-w-lg flex flex-col mb-24 sm:mb-64">
+                {{ template "page-title" dict "Title" "Queue blocks" }}
+
+                {{ template "errors" .errors }}
+                {{ template "success" .success }}
+
+                <div class="w-full p-6 mb-6 sm:mb-10 bg-white rounded-xl border border-gray-300">
+                    <p class="font-semibold text-blue-900">Queue single block</p>
+                    <p class="text-gray-500 text-sm">Add a single block to the TODO list</p>
+
+                    <form method="post" action="/queue" class="flex flex-col flex-start pt-4">
+                        <input type="hidden" name="type" value="single">
+
+                        <div class="my-2">
+                            <label for="block" class="text-sm text-gray-500">Block number</label>
+                            <input name="block" id="block" type="text" placeholder="eg: 1323"
+                                   class="w-full px-4 py-2 border border-gray-300 hover:border-blue-500 focus:border-blue-500 transition rounded text-blue-900 text-sm"
+                            >
+                        </div>
+
+                        {{ template "form-button" "Add to queue" }}
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-300 w-full p-6">
+                    <p class="font-semibold text-blue-900">Queue interval</p>
+                    <p class="text-gray-500 text-sm">Add all the blocks from start to end into the TODO list.</p>
+
+                    <form method="post" action="/queue" class="flex flex-col pt-4">
+                        <input type="hidden" name="type" value="interval">
+
+                        <div class="flex my-2">
+                            <div class="w-1/2 mr-2">
+                                <label for="start" class="text-sm text-gray-500">Starting block</label>
+                                <input name="start" id="start" type="text" placeholder="eg: 1323"
+                                       class="w-full px-4 py-2 border border-gray-300 hover:border-blue-500 focus:border-blue-500 transition rounded text-blue-900 text-sm"
+                                >
+                            </div>
+
+                            <div class="w-1/2 ml-2">
+                                <label for="end" class="text-sm text-gray-500">Ending block</label>
+                                <input name="end" id="end" type="text" placeholder="eg: 1323"
+                                       class="w-full px-4 py-2 border border-gray-300 hover:border-blue-500 focus:border-blue-500 transition rounded text-blue-900 text-sm"
+                                >
+                            </div>
+                        </div>
+
+                        {{ template "form-button" "Add to queue" }}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {{ template "end" }}
+{{ end }}

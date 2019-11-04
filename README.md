@@ -6,11 +6,17 @@ The main goal of the tool is to scrape the raw data from the network, do the nec
 
 Seamless integration with the [Ethereum Lite Explorer by Alethio](https://github.com/Alethio/ethereum-lite-explorer) is coming soon to provide you the full blockchain exploration capabilities without the need of a third party.
 
+Easily check the system status, perform various actions and manage your configuration through the built-in dashboard.  
+
+![memento dashboard](/web/assets/images/preview.png "Memento dashboard")
+
 ## Contents
 - [Memento - Ethereum scraper and indexer](#memento---ethereum-scraper-and-indexer)
   - [Features](#features)
   - [Getting started](#getting-started)
     - [Configuration](#configuration)
+      - [Via dashboard](#via-dashboard)
+      - [Via config file / command line arguments](#via-config-file--command-line-arguments)
     - [Installation](#installation)
       - [Building from source](#building-from-source)
       - [Running with Docker](#running-with-docker)
@@ -21,17 +27,14 @@ Seamless integration with the [Ethereum Lite Explorer by Alethio](https://github
       - [With Parity Light Client](#with-parity-light-client)
       - [With Ganache](#with-ganache)
       - [With Pantheon](#with-pantheon)
-  - [Usage](#usage)
+  - [Command-line usage](#command-line-usage)
     - [`run`](#run)
     - [`migrate`](#migrate)
     - [`reset`](#reset)
     - [`queue`](#queue)
-  - [API Documentation](https://github.com/Alethio/memento/wiki/API-documentation)
   - [How to](#how-to)
     - [Accessing the database directly when using docker-compose](#accessing-the-database-directly-when-using-docker-compose)
     - [Queueing a block when using Docker](#queueing-a-block-when-using-docker)
-  - [Contributing](CONTRIBUTING.md)
-  - [License](LICENSE.md)
 
 ## Features
 **Works with any web3-compatible node**
@@ -48,7 +51,7 @@ No matter if the tool has been offline for a period of time or it is the first t
 
 **Chain reorganisations (reorg) handling**
 
-Whenever a reorg is detected we check the db for a block with the same number but different hash and replace it with the newest version.
+Whenever a reorg is detected we check the db for a block with the same number but different hash and replace it with the newest version. Note: this depends on the behavior of the node to which Memento is connected and it doesn't guarantee the data is 100% reorg-proof. 
     
 **Lag function**
 
@@ -66,6 +69,20 @@ If the feature is enabled, whenever the `run` function is called, it will automa
 
 ## Getting started
 ### Configuration
+
+#### Via dashboard
+> Note: Memento has to be running in order to access the dashboard & the [config-management feature](/config-sample.yml#L18) should be enabled.
+ 
+> This method is not recommended for the initial setup. 
+
+1. Go to `http://localhost:3000/config` (by default; if you configured a different port, use that one) 
+2. Modify whatever you need and click "Save & restart"
+3. Memento will exit in order to apply changes
+    1. if you're running with the default docker-compose, it will restart automatically
+    2. if you're manually running Memento via the executable, you'll have to start it again
+4. Done
+
+#### Via config file / command line arguments
 Please refer to [config.sample.yml](/config-sample.yml) for a list of available configuration parameters.
 
 All the options in the config file have a corresponding flag represented by the the tree elements concatenated with a `.` (dot), for example:
@@ -119,6 +136,11 @@ cp config-sample.yml config.yml
 ./memento run --vv
 ```
 
+**Open the dashboard to check progress**
+```
+http://localhost:3000
+``` 
+
 #### Running with Docker
 The simplest way to run the whole setup is by using the included docker compose
 
@@ -136,29 +158,15 @@ docker-compose up -d
 
 If you already have a postgres instance & a redis instance set up and still want the simplest way, you can use the docker image from Dockerhub.
 ```shell script
-# TODO: add the image when published
 docker run --name memento -d -v /path/to/config/folder:/config/ alethio/memento:latest
 ```
 
 #### Example output
-```shell script
-time="2019-09-04T11:53:00Z" level=info msg="[eth] starting best block tracker"
-time="2019-09-04T11:53:01Z" level=info msg="[taskmanager] setting up redis connection"
-time="2019-09-04T11:53:01Z" level=info msg="[taskmanager] connected to redis successfully"
-time="2019-09-04T11:53:01Z" level=info msg="[core] connecting to postgres"
-time="2019-09-04T11:53:01Z" level=info msg="[core] attempting automatic execution of migrations"
-2019/09/04 11:53:01 goose: no migrations to run. current version: 6
-time="2019-09-04T11:53:01Z" level=info msg="[core] database version is up to date"
-time="2019-09-04T11:53:01Z" level=info msg="[core] connected to postgres successfuly"
-time="2019-09-04T11:53:01Z" level=info msg="[core] got highest block from db" block=1233400
-time="2019-09-04T11:53:01Z" level=info msg="[core] got highest block from network" block=1238637
-time="2019-09-04T11:53:01Z" level=info msg="[core] skipping backfilling since feature is disabled"
-time="2019-09-04T11:53:14Z" level=info msg="[core] processing block" block=1238638
-time="2019-09-04T11:53:15Z" level=info msg="[core] done processing block" block=1238638 duration=1.200026273s
-```
+![image](https://user-images.githubusercontent.com/8313779/68114387-9109d600-fefe-11e9-8fd0-9666968654a7.png)
 
 #### Result
-After the program started, it will start following the best block from the network, scraping the data and indexing it into postgres. It will also expose an API, by default on port `3001` (configurable). 
+After the program started, it will start following the best block from the network, scraping the data and indexing it into postgres. 
+It automatically exposes the dashboard on port `:3000`. You can also use the api on `:3001/api/explorer`. 
 
 
 ### Example setups
@@ -182,6 +190,11 @@ Start Memento
 ```shell script
 docker-compose up -d
 ```
+
+Open the dashboard to check progress
+```
+http://localhost:3000
+``` 
 
 ####  With Parity Light Client
 This will allow you to run both your own node and indexing service.
@@ -211,6 +224,11 @@ Start Memento
 docker-compose up -d
 ```
 
+Open the dashboard to check progress
+```
+http://localhost:3000
+``` 
+
 #### With Ganache
 First of all, if you do not have it, download and install [Ganache](https://truffleframework.com/ganache) which will give you your own personal test chain.
 
@@ -232,6 +250,11 @@ Start Memento
 ```shell script
 docker-compose up -d
 ```
+
+Open the dashboard to check progress
+```
+http://localhost:3000
+``` 
 
 #### With Pantheon
 This is a great way to use a full featured client, and to see how the explorer works with a private network.
@@ -261,7 +284,12 @@ Start Memento
 docker-compose up -d
 ```
 
-## Usage
+Open the dashboard to check progress
+```
+http://localhost:3000
+``` 
+
+## Command-line usage
 Memento is comprised of a few commands that will be detailed below.
 
 Summary: 
@@ -278,25 +306,28 @@ Usage:
   memento run [flags]
 
 Flags:
-      --api.dev-cors                  Enable development cors for HTTP API
-      --api.dev-cors-host string      Allowed host for HTTP API dev cors
-      --api.port string               HTTP API port (default "3001")
-      --db.connection-string string   Postgres connection string.
-      --db.dbname string              Database name (default "coriolis")
-      --db.host string                Database host (default "localhost")
-      --db.port string                Database port (default "5432")
-      --db.sslmode string             Database sslmode (default "disable")
-      --db.user string                Database user (also allowed via PG_USER env)
-      --eth.client.http string        HTTP endpoint of JSON-RPC enabled Ethereum node
-      --eth.client.ws string          WS endpoint of JSON-RPC enabled Ethereum node (provide this only if you want to use websocket subscription for tracking best block)
-      --eth.poll-interval duration    Interval to be used for polling the Ethereum node for best block (default 15s)
-      --feature.automigrate.enabled   Enable/disable the automatic migrations feature (default true)
-      --feature.backfill.enabled      Enable/disable the automatic backfilling of data (default true)
-      --feature.lag.enabled           Enable/disable the lag behind feature (used to avoid reorgs)
-      --feature.lag.value int         The amount of blocks to lag behind the tip of the chain (default 10)
-  -h, --help                          help for run
-      --redis.list string             The name of the list to be used for task management (default "todo")
-      --redis.server string           Redis server URL (default "localhost:6379")
+      --api.dev-cors                          Enable development cors for HTTP API
+      --api.dev-cors-host string              Allowed host for HTTP API dev cors
+      --api.port string                       HTTP API port (default "3001")
+      --dashboard.config-management.enabled   Enable/disable the config management option from dashboard (default true)
+      --dashboard.port string                 Memento Dashboard port (default "3000")
+      --db.connection-string string           Postgres connection string.
+      --db.dbname string                      Database name (default "coriolis")
+      --db.host string                        Database host (default "localhost")
+      --db.port string                        Database port (default "5432")
+      --db.sslmode string                     Database sslmode (default "disable")
+      --db.user string                        Database user (also allowed via PG_USER env)
+      --eth.client.http string                HTTP endpoint of JSON-RPC enabled Ethereum node
+      --eth.client.poll-interval duration     Interval to be used for polling the Ethereum node for best block (default 15s)
+      --eth.client.ws string                  WS endpoint of JSON-RPC enabled Ethereum node (provide this only if you want to use websocket subscription for tracking best block)
+      --feature.automigrate.enabled           Enable/disable the automatic migrations feature (default true)
+      --feature.backfill.enabled              Enable/disable the automatic backfilling of data (default true)
+      --feature.lag.enabled                   Enable/disable the lag behind feature (used to avoid reorgs)
+      --feature.lag.value int                 The amount of blocks to lag behind the tip of the chain (default 10)
+      --feature.uncles.enabled                Enable/disable uncles scraping (default true)
+  -h, --help                                  help for run
+      --redis.list string                     The name of the list to be used for task management (default "todo")
+      --redis.server string                   Redis server URL (default "localhost:6379")
 
 Global Flags:
       --config string          /path/to/config.yml

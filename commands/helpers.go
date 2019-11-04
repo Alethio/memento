@@ -11,6 +11,8 @@ import (
 )
 
 func initLogging() {
+	logging := viper.GetString("logging")
+
 	if verbose && logging == "" {
 		logging = "*=debug"
 	}

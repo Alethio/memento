@@ -4,8 +4,10 @@ require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/alethio/ethmock v0.0.0-20190820104914-7b8327fb645e // indirect
 	github.com/alethio/web3-go v0.0.3
+	github.com/davecgh/go-spew v1.1.1
 	github.com/elazarl/goproxy v0.0.0-20191011121108-aa519ddbe484 // indirect
 	github.com/gin-contrib/cors v1.3.0
+	github.com/gin-contrib/static v0.0.0-20190913125243-df30d4057ba1
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/golang/protobuf v1.3.2 // indirect
@@ -27,6 +29,7 @@ require (
 	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
 	golang.org/x/text v0.3.2 // indirect
+	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
 
 go 1.13

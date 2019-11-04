@@ -33,7 +33,7 @@ func (a *API) TxDetailsHandler(c *gin.Context) {
 		blockCreationTime   storable.DatetimeToJSONUnix
 		logEntriesTriggered int32
 	)
-	err := a.db.QueryRow(`select tx_hash, included_in_block, tx_index, "from", "to", value, tx_nonce, msg_gas_limit, tx_gas_used, tx_gas_price, cumulative_gas_used, msg_payload, msg_status, creates, tx_logs_bloom, block_creation_time, log_entries_triggered from txs where tx_hash = $1 limit 1`, searchHash).Scan(&txHash, &includedInBlock, &txIndex, &from, &to, &value, &txNonce, &msgGasLimit, &txGasUsed, &txGasPrice, &cumulativeGasUsed, &msgPayload, &msgStatus, &creates, &txLogsBloom, &blockCreationTime, &logEntriesTriggered)
+	err := a.core.DB().QueryRow(`select tx_hash, included_in_block, tx_index, "from", "to", value, tx_nonce, msg_gas_limit, tx_gas_used, tx_gas_price, cumulative_gas_used, msg_payload, msg_status, creates, tx_logs_bloom, block_creation_time, log_entries_triggered from txs where tx_hash = $1 limit 1`, searchHash).Scan(&txHash, &includedInBlock, &txIndex, &from, &to, &value, &txNonce, &msgGasLimit, &txGasUsed, &txGasPrice, &cumulativeGasUsed, &msgPayload, &msgStatus, &creates, &txLogsBloom, &blockCreationTime, &logEntriesTriggered)
 	if err != nil && err != sql.ErrNoRows {
 		Error(c, err)
 		return
@@ -68,7 +68,7 @@ func (a *API) TxDetailsHandler(c *gin.Context) {
 func (a *API) TxLogEntriesHandler(c *gin.Context) {
 	txHash := utils.CleanUpHex(c.Param("txHash"))
 
-	rows, err := a.db.Query(`select tx_hash, log_index, log_data, logged_by, topic_0, topic_1, topic_2, topic_3 from log_entries where tx_hash = $1 order by log_index`, txHash)
+	rows, err := a.core.DB().Query(`select tx_hash, log_index, log_data, logged_by, topic_0, topic_1, topic_2, topic_3 from log_entries where tx_hash = $1 order by log_index`, txHash)
 	if err != nil && err != sql.ErrNoRows {
 		Error(c, err)
 		return
@@ -192,7 +192,7 @@ func (a *API) AccountTxsHandler(c *gin.Context) {
 
 	query = fmt.Sprintf(query, filters)
 
-	rows, err := a.db.Query(query, params...)
+	rows, err := a.core.DB().Query(query, params...)
 	if err != nil && err != sql.ErrNoRows {
 		Error(c, err)
 		return

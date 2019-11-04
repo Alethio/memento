@@ -6,6 +6,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Alethio/memento/dashboard"
+
 	"github.com/Alethio/memento/api"
 
 	"github.com/Alethio/memento/scraper"
@@ -39,20 +41,16 @@ var runCmd = &cobra.Command{
 				PollInterval: viper.GetDuration("eth.poll-interval"),
 			},
 			TaskManager: taskmanager.Config{
-				RedisServer:   viper.GetString("redis.server"),
-				RedisPassword: viper.GetString("REDIS_PASSWORD"),
-				TodoList:      viper.GetString("redis.list"),
+				RedisServer:     viper.GetString("redis.server"),
+				RedisPassword:   viper.GetString("REDIS_PASSWORD"),
+				TodoList:        viper.GetString("redis.list"),
+				BackfillEnabled: viper.GetBool("feature.backfill.enabled"),
 			},
 			Scraper: scraper.Config{
 				NodeURL:      viper.GetString("eth.client.http"),
 				EnableUncles: viper.GetBool("feature.uncles.enabled"),
 			},
 			PostgresConnectionString: viper.GetString("db.connection-string"),
-			API: api.Config{
-				Port:           viper.GetString("api.port"),
-				DevCorsEnabled: viper.GetBool("api.dev-cors"),
-				DevCorsHost:    viper.GetString("api.dev-cors-host"),
-			},
 			Features: core.Features{
 				Backfill: viper.GetBool("feature.backfill.enabled"),
 				Lag: core.FeatureLag{
@@ -63,8 +61,20 @@ var runCmd = &cobra.Command{
 				Uncles:      viper.GetBool("feature.uncles.enabled"),
 			},
 		})
-
 		c.Run()
+
+		a := api.New(c, api.Config{
+			Port:           viper.GetString("api.port"),
+			DevCorsEnabled: viper.GetBool("api.dev-cors"),
+			DevCorsHost:    viper.GetString("api.dev-cors-host"),
+		})
+		go a.Run()
+
+		d := dashboard.New(c, dashboard.Config{
+			Port:          viper.GetString("dashboard.port"),
+			ConfigEnabled: viper.GetBool("dashboard.config-management.enabled"),
+		})
+		go d.Run()
 
 		select {
 		case <-stopChan:
@@ -105,8 +115,8 @@ func init() {
 	runCmd.Flags().String("eth.client.ws", "", "WS endpoint of JSON-RPC enabled Ethereum node (provide this only if you want to use websocket subscription for tracking best block)")
 	viper.BindPFlag("eth.client.ws", runCmd.Flag("eth.client.ws"))
 
-	runCmd.Flags().Duration("eth.poll-interval", 15*time.Second, "Interval to be used for polling the Ethereum node for best block")
-	viper.BindPFlag("eth.poll-interval", runCmd.Flag("eth.poll-interval"))
+	runCmd.Flags().Duration("eth.client.poll-interval", 15*time.Second, "Interval to be used for polling the Ethereum node for best block")
+	viper.BindPFlag("eth.client.poll-interval", runCmd.Flag("eth.client.poll-interval"))
 
 	// api
 	runCmd.Flags().String("api.port", "3001", "HTTP API port")
@@ -117,4 +127,11 @@ func init() {
 
 	runCmd.Flags().String("api.dev-cors-host", "", "Allowed host for HTTP API dev cors")
 	viper.BindPFlag("api.dev-cors-host", runCmd.Flag("api.dev-cors-host"))
+
+	// dashboard
+	runCmd.Flags().String("dashboard.port", "3000", "Memento Dashboard port")
+	viper.BindPFlag("dashboard.port", runCmd.Flag("dashboard.port"))
+
+	runCmd.Flags().Bool("dashboard.config-management.enabled", true, "Enable/disable the config management option from dashboard")
+	viper.BindPFlag("dashboard.config-management.enabled", runCmd.Flag("dashboard.config-management.enabled"))
 }

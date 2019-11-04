@@ -1,8 +1,7 @@
 package api
 
 import (
-	"database/sql"
-
+	"github.com/Alethio/memento/core"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -19,17 +18,18 @@ type Config struct {
 type API struct {
 	config Config
 	engine *gin.Engine
-	db     *sql.DB
+
+	core *core.Core
 }
 
-func New(db *sql.DB, config Config) *API {
+func New(core *core.Core, config Config) *API {
 	return &API{
 		config: config,
-		db:     db,
+		core:   core,
 	}
 }
 
-func (a *API) Start() {
+func (a *API) Run() {
 	a.engine = gin.Default()
 
 	if a.config.DevCorsEnabled {
