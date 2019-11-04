@@ -26,6 +26,7 @@ services:
       - postgres
     ports:
       - 127.0.0.1:3001:3001
+      - 127.0.0.1:3000:3000
     environment:
       - PG_PASSWORD=password
     volumes:

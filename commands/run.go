@@ -6,6 +6,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Alethio/memento/gui"
+
 	"github.com/Alethio/memento/api"
 
 	"github.com/Alethio/memento/scraper"
@@ -68,6 +70,11 @@ var runCmd = &cobra.Command{
 		})
 		go a.Run()
 
+		g := gui.New(c, gui.Config{
+			Port: viper.GetString("gui.port"),
+		})
+		go g.Run()
+
 		select {
 		case <-stopChan:
 			log.Info("Got stop signal. Finishing work.")
@@ -119,4 +126,8 @@ func init() {
 
 	runCmd.Flags().String("api.dev-cors-host", "", "Allowed host for HTTP API dev cors")
 	viper.BindPFlag("api.dev-cors-host", runCmd.Flag("api.dev-cors-host"))
+
+	// gui
+	runCmd.Flags().String("gui.port", "3000", "Memento Dashboard port")
+	viper.BindPFlag("gui.port", runCmd.Flag("gui.port"))
 }
