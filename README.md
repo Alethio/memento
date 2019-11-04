@@ -71,7 +71,9 @@ If the feature is enabled, whenever the `run` function is called, it will automa
 ### Configuration
 
 #### Via dashboard
-1. Go to `http://localhost:3001/config` (by default; if you configured a different port for the API, use that)
+> Note: Memento has to be running in order to access the dashboard. This method is not recommended for the initial setup. 
+
+1. Go to `http://localhost:3001/config` (by default; if you configured a different port for the API, use that) 
 2. Modify whatever you need and click "Save & restart"
 3. Memento will exit in order to apply changes
     1. if you're running with the default docker-compose, it will restart automatically
