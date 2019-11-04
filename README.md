@@ -15,6 +15,8 @@ Easily check the system status, perform various actions and manage your configur
   - [Features](#features)
   - [Getting started](#getting-started)
     - [Configuration](#configuration)
+      - [Via dashboard](#via-dashboard)
+      - [Via config file / command line arguments](#via-config-file--command-line-arguments)
     - [Installation](#installation)
       - [Building from source](#building-from-source)
       - [Running with Docker](#running-with-docker)
@@ -25,17 +27,14 @@ Easily check the system status, perform various actions and manage your configur
       - [With Parity Light Client](#with-parity-light-client)
       - [With Ganache](#with-ganache)
       - [With Pantheon](#with-pantheon)
-  - [Usage](#usage)
+  - [Command-line usage](#command-line-usage)
     - [`run`](#run)
     - [`migrate`](#migrate)
     - [`reset`](#reset)
     - [`queue`](#queue)
-  - [API Documentation](https://github.com/Alethio/memento/wiki/API-documentation)
   - [How to](#how-to)
     - [Accessing the database directly when using docker-compose](#accessing-the-database-directly-when-using-docker-compose)
     - [Queueing a block when using Docker](#queueing-a-block-when-using-docker)
-  - [Contributing](CONTRIBUTING.md)
-  - [License](LICENSE.md)
 
 ## Features
 **Works with any web3-compatible node**
@@ -52,7 +51,7 @@ No matter if the tool has been offline for a period of time or it is the first t
 
 **Chain reorganisations (reorg) handling**
 
-Whenever a reorg is detected we check the db for a block with the same number but different hash and replace it with the newest version.
+Whenever a reorg is detected we check the db for a block with the same number but different hash and replace it with the newest version. Note: this depends on the behavior of the node to which Memento is connected and it doesn't guarantee the data is 100% reorg-proof. 
     
 **Lag function**
 
@@ -70,6 +69,16 @@ If the feature is enabled, whenever the `run` function is called, it will automa
 
 ## Getting started
 ### Configuration
+
+#### Via dashboard
+1. Go to `http://localhost:3001/config` (by default; if you configured a different port for the API, use that)
+2. Modify whatever you need and click "Save & restart"
+3. Memento will exit in order to apply changes
+    1. if you're running with the default docker-compose, it will restart automatically
+    2. if you're manually running Memento via the executable, you'll have to start it again
+4. Done
+
+#### Via config file / command line arguments
 Please refer to [config.sample.yml](/config-sample.yml) for a list of available configuration parameters.
 
 All the options in the config file have a corresponding flag represented by the the tree elements concatenated with a `.` (dot), for example:
@@ -123,6 +132,11 @@ cp config-sample.yml config.yml
 ./memento run --vv
 ```
 
+**Open the dashboard to check progress**
+```
+http://localhost:3001
+``` 
+
 #### Running with Docker
 The simplest way to run the whole setup is by using the included docker compose
 
@@ -140,7 +154,6 @@ docker-compose up -d
 
 If you already have a postgres instance & a redis instance set up and still want the simplest way, you can use the docker image from Dockerhub.
 ```shell script
-# TODO: add the image when published
 docker run --name memento -d -v /path/to/config/folder:/config/ alethio/memento:latest
 ```
 
@@ -188,6 +201,11 @@ Start Memento
 docker-compose up -d
 ```
 
+Open the dashboard to check progress
+```
+http://localhost:3001
+``` 
+
 ####  With Parity Light Client
 This will allow you to run both your own node and indexing service.
 No third-party dependencies.
@@ -216,6 +234,11 @@ Start Memento
 docker-compose up -d
 ```
 
+Open the dashboard to check progress
+```
+http://localhost:3001
+``` 
+
 #### With Ganache
 First of all, if you do not have it, download and install [Ganache](https://truffleframework.com/ganache) which will give you your own personal test chain.
 
@@ -237,6 +260,11 @@ Start Memento
 ```shell script
 docker-compose up -d
 ```
+
+Open the dashboard to check progress
+```
+http://localhost:3001
+``` 
 
 #### With Pantheon
 This is a great way to use a full featured client, and to see how the explorer works with a private network.
@@ -266,7 +294,12 @@ Start Memento
 docker-compose up -d
 ```
 
-## Usage
+Open the dashboard to check progress
+```
+http://localhost:3001
+``` 
+
+## Command-line usage
 Memento is comprised of a few commands that will be detailed below.
 
 Summary: 
