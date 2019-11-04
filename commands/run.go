@@ -6,6 +6,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Alethio/memento/dashboard"
+
 	"github.com/Alethio/memento/api"
 
 	"github.com/Alethio/memento/scraper"
@@ -68,6 +70,12 @@ var runCmd = &cobra.Command{
 		})
 		go a.Run()
 
+		d := dashboard.New(c, dashboard.Config{
+			Port:          viper.GetString("dashboard.port"),
+			ConfigEnabled: viper.GetBool("dashboard.config-management.enabled"),
+		})
+		go d.Run()
+
 		select {
 		case <-stopChan:
 			log.Info("Got stop signal. Finishing work.")
@@ -119,4 +127,11 @@ func init() {
 
 	runCmd.Flags().String("api.dev-cors-host", "", "Allowed host for HTTP API dev cors")
 	viper.BindPFlag("api.dev-cors-host", runCmd.Flag("api.dev-cors-host"))
+
+	// dashboard
+	runCmd.Flags().String("dashboard.port", "3000", "Memento Dashboard port")
+	viper.BindPFlag("dashboard.port", runCmd.Flag("dashboard.port"))
+
+	runCmd.Flags().Bool("dashboard.config-management.enabled", true, "Enable/disable the config management option from dashboard")
+	viper.BindPFlag("dashboard.config-management.enabled", runCmd.Flag("dashboard.config-management.enabled"))
 }
