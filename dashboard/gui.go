@@ -1,4 +1,4 @@
-package gui
+package dashboard
 
 import (
 	"github.com/Alethio/memento/core"
@@ -9,32 +9,33 @@ import (
 var log = logrus.WithField("module", "gui")
 
 type Config struct {
-	Port string
+	Port          string
+	ConfigEnabled bool
 }
 
-type GUI struct {
+type Dashboard struct {
 	config Config
 	engine *gin.Engine
 
 	core *core.Core
 }
 
-func New(core *core.Core, config Config) *GUI {
-	return &GUI{
+func New(core *core.Core, config Config) *Dashboard {
+	return &Dashboard{
 		config: config,
 		core:   core,
 	}
 }
 
-func (g *GUI) Run() {
-	g.engine = gin.Default()
-	g.setRoutes()
+func (d *Dashboard) Run() {
+	d.engine = gin.Default()
+	d.setRoutes()
 
-	err := g.engine.Run(":" + g.config.Port)
+	err := d.engine.Run(":" + d.config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func (g *GUI) Close() {
+func (d *Dashboard) Close() {
 }

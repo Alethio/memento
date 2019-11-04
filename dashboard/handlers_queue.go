@@ -1,4 +1,4 @@
-package gui
+package dashboard
 
 import (
 	"fmt"
@@ -7,16 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (g *GUI) QueueHandler(c *gin.Context) {
-	g.sendGUIResponse(c, "queue", gin.H{})
+func (d *Dashboard) QueueHandler(c *gin.Context) {
+	d.sendResponse(c, "queue", gin.H{})
 }
 
-func (g *GUI) QueuePostHandler(c *gin.Context) {
+func (d *Dashboard) QueuePostHandler(c *gin.Context) {
 	var errors []string
 	var success []string
 
 	defer func() {
-		g.sendGUIResponse(c, "queue", gin.H{
+		d.sendResponse(c, "queue", gin.H{
 			"errors":  errors,
 			"success": success,
 		})
@@ -30,7 +30,7 @@ func (g *GUI) QueuePostHandler(c *gin.Context) {
 			return
 		}
 
-		err = g.core.AddTodo(blockInt)
+		err = d.core.AddTodo(blockInt)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Could not queue block: %s", err))
 			return
@@ -53,7 +53,7 @@ func (g *GUI) QueuePostHandler(c *gin.Context) {
 		}
 
 		for i := startInt; i <= endInt; i++ {
-			err = g.core.AddTodo(i)
+			err = d.core.AddTodo(i)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Could not queue block: %s", err))
 				return

@@ -9,6 +9,15 @@ api:
   # Allowed hosts for HTTP API development CORS
   dev-cors-host: "*"
 
+# Dashboard-related fields
+dashboard:
+  # The port on which the Dashboard will be exposed (default:3000)
+  # WARNING: it must not be the same as api.port!
+  port: 3000
+
+  config-management:
+    enabled: true
+
 # database fields
 db:
   # Database host
@@ -65,11 +74,6 @@ feature:
   uncles:
     # Enable/disabled the uncles scraping
     enabled: true
-
-# Dashboard-related fields
-gui:
-  # The port on which the Dashboard will be exposed (default:3000)
-  port: 3000
 
 # Control what to be logged using format "module=level,module=level"; `*` means all other modules
 logging: "*=info"

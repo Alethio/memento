@@ -1,27 +1,27 @@
-package gui
+package dashboard
 
 import (
 	"github.com/gin-gonic/gin"
 )
 
-func (g *GUI) IndexHandler(c *gin.Context) {
+func (d *Dashboard) IndexHandler(c *gin.Context) {
 	var errors []string
 
-	dbEntries, err := g.getDBEntries()
+	dbEntries, err := d.getDBEntries()
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
 
-	dbStats, err := g.getDBStats()
+	dbStats, err := d.getDBStats()
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
 
-	g.sendGUIResponse(c, "index", gin.H{
+	d.sendResponse(c, "index", gin.H{
 		"dbEntries":   dbEntries,
 		"dbStats":     dbStats,
-		"procStats":   g.getProcStats(),
-		"timingStats": g.getTimingStats(),
+		"procStats":   d.getProcStats(),
+		"timingStats": d.getTimingStats(),
 		"errors":      errors,
 	})
 }

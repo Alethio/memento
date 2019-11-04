@@ -5,59 +5,78 @@
         <div class="w-full max-w-4xl flex flex-col mb-24 sm:mb-0">
             {{ template "page-title" dict "Title" "Configuration" "Icon" "file-settings-variant"}}
 
-            {{ template "errors" .errors }}
-            {{ template "success" .success }}
-
-            <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex items-center bg-white rounded-xl border border-gray-300">
-                <div class="mr-4">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
-                        <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+            {{ with .disabled }}
+                <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+                    <div class="mr-4">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                            <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <p class="text-blue-900 text-sm font-semibold">
+                            Configuration management through the dashboard is currently disabled.<br>
+                            If you want to access it, you have to enable it manually from the config file / command line argument.
+                        </p>
                     </div>
                 </div>
-                <div class="flex flex-col">
-                    <p class="text-blue-900 text-sm font-semibold">
-                        When saving the configuration, Memento will exit in order to apply the new settings. If you're
-                        running in docker, it should be restarted automatically
-                    </p>
+            {{ else }}
+                {{ template "errors" .errors }}
+                {{ template "success" .success }}
+
+                <div class="w-full p-4 sm:p-6 mb-6 sm:mb-10 flex items-center bg-white rounded-xl border border-gray-300">
+                    <div class="mr-4">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100">
+                            <span class="mdi mdi-alert-box text-2xl text-yellow-500"></span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <p class="text-blue-900 text-sm font-semibold">
+                            When saving the configuration, Memento will exit in order to apply the new settings. If
+                            you're
+                            running in docker, it should be restarted automatically
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            <form method="post" action="/config" class="flex w-full flex-col">
-                <div class="flex flex-col sm:flex-wrap -mx-4" style="height: 1280px" id="config-wrapper">
-                    {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
-                </div>
+                <form method="post" action="/config" class="flex w-full flex-col">
+                    <div class="flex flex-col sm:flex-wrap -mx-4" style="height: 1280px" id="config-wrapper">
+                        {{ template "recursive-config" dict "Value" .settings "Step" 0 "uid" "" }}
+                    </div>
 
-                <div class="my-2 flex">
+                    <div class="my-2 flex">
 
-                    {{ template "form-button" "Save & restart" }}
+                        {{ template "form-button" "Save & restart" }}
 
-                    <input type="reset"
-                           class="px-4 py-2 mx-2 font-bold text-sm text-blue-900 border border-transparent bg-transparent cursor-pointer"
-                           value="Revert changes">
-                </div>
-            </form>
+                        <input type="reset"
+                               class="px-4 py-2 mx-2 font-bold text-sm text-blue-900 border border-transparent bg-transparent cursor-pointer"
+                               value="Revert changes">
+                    </div>
+                </form>
+            {{ end }}
         </div>
     </div>
 
-    <script>
-        el = document.getElementsByClassName("config-category")
+    {{ if not .disabled }}
+        <script>
+            el = document.getElementsByClassName("config-category")
 
-        var items = 3
-        if (window.innerWidth <= 640) {
-            items = el.length
-        }
+            var items = 4
+            if (window.innerWidth <= 640) {
+                items = el.length
+            }
 
-        var height = 0
+            var height = 0
 
-        for (i = 0; i < items; i++) {
-            height += el[i].offsetHeight
-        }
+            for (i = 0; i < items; i++) {
+                height += el[i].offsetHeight
+            }
 
-        height+=10
+            height += 10
 
-        document.getElementById("config-wrapper").style.height = height + "px"
+            document.getElementById("config-wrapper").style.height = height + "px"
 
-    </script>
+        </script>
+    {{ end }}
 
     {{ template "end" }}
 {{ end }}

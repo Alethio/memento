@@ -1,25 +1,25 @@
-package gui
+package dashboard
 
 import "github.com/gin-gonic/gin"
 
-func (g *GUI) GUIResetHandler(c *gin.Context) {
-	g.sendGUIResponse(c, "reset", gin.H{})
+func (d *Dashboard) ResetHandler(c *gin.Context) {
+	d.sendResponse(c, "reset", gin.H{})
 }
 
-func (g *GUI) GUIResetPostHandler(c *gin.Context) {
+func (d *Dashboard) ResetPostHandler(c *gin.Context) {
 	var errors []string
 	var success []string
 
 	defer func() {
-		g.sendGUIResponse(c, "reset", gin.H{
+		d.sendResponse(c, "reset", gin.H{
 			"errors":  errors,
 			"success": success,
 		})
 	}()
 
-	g.core.Pause()
+	d.core.Pause()
 
-	err := g.core.Reset()
+	err := d.core.Reset()
 	if err != nil {
 		errors = append(errors, err.Error())
 	} else {

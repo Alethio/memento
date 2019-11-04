@@ -1,4 +1,4 @@
-package gui
+package dashboard
 
 import (
 	"fmt"
@@ -7,9 +7,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-func (g *GUI) GUIConfigHandler(c *gin.Context) {
+func (d *Dashboard) ConfigHandler(c *gin.Context) {
+	if !d.config.ConfigEnabled {
+		d.sendResponse(c, "config", gin.H{
+			"disabled": true,
+		})
+
+		return
+	}
+
 	if viper.ConfigFileUsed() == "" {
-		g.sendGUIResponse(c, "config", gin.H{
+		d.sendResponse(c, "config", gin.H{
 			"settings": map[string]interface{}{},
 			"errors":   []string{"Memento did not start using a config file."},
 		})
@@ -17,13 +25,13 @@ func (g *GUI) GUIConfigHandler(c *gin.Context) {
 		return
 	}
 
-	g.sendGUIResponse(c, "config", gin.H{
+	d.sendResponse(c, "config", gin.H{
 		"settings": getSettings(),
 	})
 }
 
-func (g *GUI) GUIConfigPostHandler(c *gin.Context) {
-	if viper.ConfigFileUsed() == "" {
+func (d *Dashboard) ConfigPostHandler(c *gin.Context) {
+	if viper.ConfigFileUsed() == "" || !d.config.ConfigEnabled {
 		c.Redirect(302, "/config")
 
 		return
@@ -52,6 +60,14 @@ func (g *GUI) GUIConfigPostHandler(c *gin.Context) {
 		delete(data, k)
 	}
 
+	if data["api.port"] == data["dashboard.port"] {
+		d.sendResponse(c, "config", gin.H{
+			"settings": getSettings(),
+			"errors":   []string{"API port can't be the same with the Dashboard port!"},
+		})
+		return
+	}
+
 	disposableViper := viper.New()
 	for k, v := range data {
 		viper.Set(k, v)
@@ -60,16 +76,16 @@ func (g *GUI) GUIConfigPostHandler(c *gin.Context) {
 
 	err := disposableViper.WriteConfigAs(viper.ConfigFileUsed())
 	if err != nil {
-		g.sendGUIResponse(c, "config", gin.H{
+		d.sendResponse(c, "config", gin.H{
 			"settings": getSettings(),
 			"errors":   []string{err.Error()},
 		})
 		return
 	}
 
-	go g.core.ExitDelayed()
+	go d.core.ExitDelayed()
 
-	g.sendGUIResponse(c, "config", gin.H{
+	d.sendResponse(c, "config", gin.H{
 		"settings": getSettings(),
 		"success":  []string{"Config updated successfully. Application will be closed in 2 seconds to apply the new settings."},
 	})

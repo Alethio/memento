@@ -71,9 +71,11 @@ If the feature is enabled, whenever the `run` function is called, it will automa
 ### Configuration
 
 #### Via dashboard
-> Note: Memento has to be running in order to access the dashboard. This method is not recommended for the initial setup. 
+> Note: Memento has to be running in order to access the dashboard & the config-management feature should be enabled.
+ 
+> This method is not recommended for the initial setup. 
 
-1. Go to `http://localhost:3001/config` (by default; if you configured a different port for the API, use that) 
+1. Go to `http://localhost:3000/config` (by default; if you configured a different port, use that one) 
 2. Modify whatever you need and click "Save & restart"
 3. Memento will exit in order to apply changes
     1. if you're running with the default docker-compose, it will restart automatically
@@ -136,7 +138,7 @@ cp config-sample.yml config.yml
 
 **Open the dashboard to check progress**
 ```
-http://localhost:3001
+http://localhost:3000
 ``` 
 
 #### Running with Docker
@@ -160,25 +162,11 @@ docker run --name memento -d -v /path/to/config/folder:/config/ alethio/memento:
 ```
 
 #### Example output
-```shell script
-time="2019-09-04T11:53:00Z" level=info msg="[eth] starting best block tracker"
-time="2019-09-04T11:53:01Z" level=info msg="[taskmanager] setting up redis connection"
-time="2019-09-04T11:53:01Z" level=info msg="[taskmanager] connected to redis successfully"
-time="2019-09-04T11:53:01Z" level=info msg="[core] connecting to postgres"
-time="2019-09-04T11:53:01Z" level=info msg="[core] attempting automatic execution of migrations"
-2019/09/04 11:53:01 goose: no migrations to run. current version: 6
-time="2019-09-04T11:53:01Z" level=info msg="[core] database version is up to date"
-time="2019-09-04T11:53:01Z" level=info msg="[core] connected to postgres successfuly"
-time="2019-09-04T11:53:01Z" level=info msg="[core] got highest block from db" block=1233400
-time="2019-09-04T11:53:01Z" level=info msg="[core] got highest block from network" block=1238637
-time="2019-09-04T11:53:01Z" level=info msg="[core] skipping backfilling since feature is disabled"
-time="2019-09-04T11:53:14Z" level=info msg="[core] processing block" block=1238638
-time="2019-09-04T11:53:15Z" level=info msg="[core] done processing block" block=1238638 duration=1.200026273s
-```
+![image](https://user-images.githubusercontent.com/8313779/68114387-9109d600-fefe-11e9-8fd0-9666968654a7.png)
 
 #### Result
 After the program started, it will start following the best block from the network, scraping the data and indexing it into postgres. 
-It automatically exposes the dashboard on port `3001`. You can also use the api on `:3001/api/explorer`. 
+It automatically exposes the dashboard on port `:3000`. You can also use the api on `:3001/api/explorer`. 
 
 
 ### Example setups
@@ -205,7 +193,7 @@ docker-compose up -d
 
 Open the dashboard to check progress
 ```
-http://localhost:3001
+http://localhost:3000
 ``` 
 
 ####  With Parity Light Client
@@ -238,7 +226,7 @@ docker-compose up -d
 
 Open the dashboard to check progress
 ```
-http://localhost:3001
+http://localhost:3000
 ``` 
 
 #### With Ganache
@@ -265,7 +253,7 @@ docker-compose up -d
 
 Open the dashboard to check progress
 ```
-http://localhost:3001
+http://localhost:3000
 ``` 
 
 #### With Pantheon
@@ -298,7 +286,7 @@ docker-compose up -d
 
 Open the dashboard to check progress
 ```
-http://localhost:3001
+http://localhost:3000
 ``` 
 
 ## Command-line usage
@@ -318,25 +306,28 @@ Usage:
   memento run [flags]
 
 Flags:
-      --api.dev-cors                  Enable development cors for HTTP API
-      --api.dev-cors-host string      Allowed host for HTTP API dev cors
-      --api.port string               HTTP API port (default "3001")
-      --db.connection-string string   Postgres connection string.
-      --db.dbname string              Database name (default "coriolis")
-      --db.host string                Database host (default "localhost")
-      --db.port string                Database port (default "5432")
-      --db.sslmode string             Database sslmode (default "disable")
-      --db.user string                Database user (also allowed via PG_USER env)
-      --eth.client.http string        HTTP endpoint of JSON-RPC enabled Ethereum node
-      --eth.client.ws string          WS endpoint of JSON-RPC enabled Ethereum node (provide this only if you want to use websocket subscription for tracking best block)
-      --eth.poll-interval duration    Interval to be used for polling the Ethereum node for best block (default 15s)
-      --feature.automigrate.enabled   Enable/disable the automatic migrations feature (default true)
-      --feature.backfill.enabled      Enable/disable the automatic backfilling of data (default true)
-      --feature.lag.enabled           Enable/disable the lag behind feature (used to avoid reorgs)
-      --feature.lag.value int         The amount of blocks to lag behind the tip of the chain (default 10)
-  -h, --help                          help for run
-      --redis.list string             The name of the list to be used for task management (default "todo")
-      --redis.server string           Redis server URL (default "localhost:6379")
+      --api.dev-cors                          Enable development cors for HTTP API
+      --api.dev-cors-host string              Allowed host for HTTP API dev cors
+      --api.port string                       HTTP API port (default "3001")
+      --dashboard.config-management.enabled   Enable/disable the config management option from dashboard (default true)
+      --dashboard.port string                 Memento Dashboard port (default "3000")
+      --db.connection-string string           Postgres connection string.
+      --db.dbname string                      Database name (default "coriolis")
+      --db.host string                        Database host (default "localhost")
+      --db.port string                        Database port (default "5432")
+      --db.sslmode string                     Database sslmode (default "disable")
+      --db.user string                        Database user (also allowed via PG_USER env)
+      --eth.client.http string                HTTP endpoint of JSON-RPC enabled Ethereum node
+      --eth.client.poll-interval duration     Interval to be used for polling the Ethereum node for best block (default 15s)
+      --eth.client.ws string                  WS endpoint of JSON-RPC enabled Ethereum node (provide this only if you want to use websocket subscription for tracking best block)
+      --feature.automigrate.enabled           Enable/disable the automatic migrations feature (default true)
+      --feature.backfill.enabled              Enable/disable the automatic backfilling of data (default true)
+      --feature.lag.enabled                   Enable/disable the lag behind feature (used to avoid reorgs)
+      --feature.lag.value int                 The amount of blocks to lag behind the tip of the chain (default 10)
+      --feature.uncles.enabled                Enable/disable uncles scraping (default true)
+  -h, --help                                  help for run
+      --redis.list string                     The name of the list to be used for task management (default "todo")
+      --redis.server string                   Redis server URL (default "localhost:6379")
 
 Global Flags:
       --config string          /path/to/config.yml

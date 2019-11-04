@@ -1,4 +1,4 @@
-package gui
+package dashboard
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/Alethio/memento/gui/types"
+	"github.com/Alethio/memento/dashboard/types"
 )
 
-func (g *GUI) getDBEntries() (types.DBEntries, error) {
+func (d *Dashboard) getDBEntries() (types.DBEntries, error) {
 	var dbEntries types.DBEntries
 
-	err := g.core.DB().QueryRow(`
+	err := d.core.DB().QueryRow(`
 	select
 	       (select count(*) from blocks)::text as blocks,
 	       (select count(*) from txs)::text as txs,
@@ -28,10 +28,10 @@ func (g *GUI) getDBEntries() (types.DBEntries, error) {
 	return dbEntries, nil
 }
 
-func (g *GUI) getDBStats() (types.DBStats, error) {
+func (d *Dashboard) getDBStats() (types.DBStats, error) {
 	var dbStats types.DBStats
 
-	err := g.core.DB().QueryRow(`
+	err := d.core.DB().QueryRow(`
 		select pg_size_pretty(sum(table_size))   as table_size,
 		       sum(table_size) 					 as raw_table_size,
 			   pg_size_pretty(sum(indexes_size)) as indexes_size,
@@ -60,33 +60,33 @@ func (g *GUI) getDBStats() (types.DBStats, error) {
 	return dbStats, nil
 }
 
-func (g *GUI) getProcStats() types.ProcStats {
+func (d *Dashboard) getProcStats() types.ProcStats {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 
 	var procStats types.ProcStats
 
 	procStats.MemoryUsage = strconv.FormatUint(bToMb(m.Sys), 10) + "MB"
-	procStats.TodoLength = strconv.FormatInt(g.core.Metrics().GetTodoLength(), 10)
-	procStats.ReorgedBlocks = strconv.FormatInt(g.core.Metrics().GetReorgedBlocks(), 10)
-	procStats.InvalidBlocks = strconv.FormatInt(g.core.Metrics().GetInvalidBlocks(), 10)
+	procStats.TodoLength = strconv.FormatInt(d.core.Metrics().GetTodoLength(), 10)
+	procStats.ReorgedBlocks = strconv.FormatInt(d.core.Metrics().GetReorgedBlocks(), 10)
+	procStats.InvalidBlocks = strconv.FormatInt(d.core.Metrics().GetInvalidBlocks(), 10)
 
-	procStats.PercentageDone = fmt.Sprintf("%f", 1-float64(g.core.Metrics().GetTodoLength())/float64(g.core.Metrics().GetLatestBLock()))
+	procStats.PercentageDone = fmt.Sprintf("%f", 1-float64(d.core.Metrics().GetTodoLength())/float64(d.core.Metrics().GetLatestBLock()))
 
 	return procStats
 }
 
-func (g *GUI) getTimingStats() types.TimingStats {
+func (d *Dashboard) getTimingStats() types.TimingStats {
 	var timingStats types.TimingStats
 
-	timingStats.ProcessingTime = g.core.Metrics().GetProcessingTime()
-	timingStats.RawProcessingTime = g.core.Metrics().GetRawProcessingTime()
+	timingStats.ProcessingTime = d.core.Metrics().GetProcessingTime()
+	timingStats.RawProcessingTime = d.core.Metrics().GetRawProcessingTime()
 
-	timingStats.ScrapingTime = g.core.Metrics().GetScrapingTime()
-	timingStats.RawScrapingTime = g.core.Metrics().GetRawScrapingTime()
+	timingStats.ScrapingTime = d.core.Metrics().GetScrapingTime()
+	timingStats.RawScrapingTime = d.core.Metrics().GetRawScrapingTime()
 
-	timingStats.IndexingTime = g.core.Metrics().GetIndexingTime()
-	timingStats.RawIndexingTime = g.core.Metrics().GetRawIndexingTime()
+	timingStats.IndexingTime = d.core.Metrics().GetIndexingTime()
+	timingStats.RawIndexingTime = d.core.Metrics().GetRawIndexingTime()
 
 	return timingStats
 }

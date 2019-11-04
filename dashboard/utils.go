@@ -1,21 +1,21 @@
-package gui
+package dashboard
 
 import (
 	"net/http"
 
-	"github.com/Alethio/memento/gui/types"
+	"github.com/Alethio/memento/dashboard/types"
 
 	"github.com/spf13/viper"
 
 	"github.com/gin-gonic/gin"
 )
 
-func (g *GUI) sendGUIResponse(c *gin.Context, template string, data gin.H) {
+func (d *Dashboard) sendResponse(c *gin.Context, template string, data gin.H) {
 	c.HTML(http.StatusOK, template, mergeMaps(gin.H{
 		"nav": types.Nav{
-			Latest:  g.core.Metrics().GetLatestBLock(),
+			Latest:  d.core.Metrics().GetLatestBLock(),
 			Version: viper.GetString("version"),
-			Paused:  g.core.IsPaused(),
+			Paused:  d.core.IsPaused(),
 		},
 	}, data))
 }
