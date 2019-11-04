@@ -71,7 +71,7 @@ If the feature is enabled, whenever the `run` function is called, it will automa
 ### Configuration
 
 #### Via dashboard
-> Note: Memento has to be running in order to access the dashboard & the config-management feature should be enabled.
+> Note: Memento has to be running in order to access the dashboard & the [config-management feature](/config-sample.yml#L18) should be enabled.
  
 > This method is not recommended for the initial setup. 
 
