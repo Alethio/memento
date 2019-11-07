@@ -16,6 +16,8 @@ type Tx struct {
 	CumulativeGasUsed   *string                      `json:"cumulativeGasUsed,omitempty"`
 	MsgPayload          *storable.ByteArray          `json:"msgPayload,omitempty"`
 	MsgStatus           *string                      `json:"msgStatus,omitempty"`
+	MsgError            *bool                        `json:"msgError,omitempty"`
+	MsgErrorString      *string                      `json:"msgErrorString,omitempty"`
 	Creates             *storable.ByteArray          `json:"creates,omitempty"`
 	TxLogsBloom         *storable.ByteArray          `json:"txLogsBloom,omitempty"`
 	BlockCreationTime   *storable.DatetimeToJSONUnix `json:"blockCreationTime,omitempty"`
