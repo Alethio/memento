@@ -44,7 +44,7 @@ func (a *API) TxDetailsHandler(c *gin.Context) {
 		return
 	}
 
-	OK(c, types.Tx{
+	tx := types.Tx{
 		TxHash:              &txHash,
 		IncludedInBlock:     &includedInBlock,
 		TxIndex:             &txIndex,
@@ -62,7 +62,19 @@ func (a *API) TxDetailsHandler(c *gin.Context) {
 		TxLogsBloom:         &txLogsBloom,
 		BlockCreationTime:   &blockCreationTime,
 		LogEntriesTriggered: &logEntriesTriggered,
-	})
+	}
+
+	var msgError bool
+	var msgErrorString string
+	if tx.MsgStatus != nil && *tx.MsgStatus == "0x0" {
+		msgError = true
+		msgErrorString = "Error"
+	}
+
+	tx.MsgError = &msgError
+	tx.MsgErrorString = &msgErrorString
+
+	OK(c, tx)
 }
 
 func (a *API) TxLogEntriesHandler(c *gin.Context) {
