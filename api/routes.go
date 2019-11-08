@@ -8,4 +8,5 @@ func (a *API) setRoutes() {
 	explorer.GET("/tx/:txHash", a.TxDetailsHandler)
 	explorer.GET("/tx/:txHash/log-entries", a.TxLogEntriesHandler)
 	explorer.GET("/account/:address/txs", a.AccountTxsHandler)
+	explorer.GET("/search/:query", a.SearchHandler)
 }
