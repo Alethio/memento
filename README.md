@@ -12,7 +12,6 @@ Easily check the system status, perform various actions and manage your configur
 
 ## Contents
 - [Memento - Ethereum scraper and indexer](#memento---ethereum-scraper-and-indexer)
-  - [Contents](#contents)
   - [Features](#features)
   - [Getting started](#getting-started)
     - [Configuration](#configuration)
