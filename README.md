@@ -19,7 +19,7 @@ Easily check the system status, perform various actions and manage your configur
       - [Via dashboard](#via-dashboard)
       - [Via config file / command line arguments](#via-config-file--command-line-arguments)
     - [Running](#running)
-      - [Memento with lite explorer](#memento-with-lite-explorer)
+      - [Memento with Lite Explorer](#memento-with-lite-explorerhttpsgithubcomalethioethereum-lite-explorer)
       - [Standalone via docker compose](#standalone-via-docker-compose)
       - [Running with Docker](#running-with-docker)
     - [Building from source](#building-from-source)
@@ -111,10 +111,10 @@ PG_PASSWORD
 
 ### Running
 
-#### Memento with [lite explorer](https://github.com/Alethio/ethereum-lite-explorer)
+#### Memento with [Lite Explorer](https://github.com/Alethio/ethereum-lite-explorer)
 We've included a [docker-compose](./docker-compose-explorer.yml) that packages a full working environment with Memento and the [Ethereum Lite Explorer by Alethio](https://github.com/Alethio/ethereum-lite-explorer). 
 
-**Copy the config and edit it as needed.** By default, the values for postgres and redis are correct for using with docker compose.
+Copy the config and edit it as needed. By default, the values for postgres and redis are correct for using with docker compose.
 ```shell script
 mkdir -p .volumes/memento
 mkdir -p .volumes/lite-explorer
@@ -123,17 +123,17 @@ cp config-sample.yml .volumes/memento/config.yml
 cp lite-explorer.config.json .volumes/lite-explorer/config.json
 ```
 
-**Start everything**
+Start everything
 ```shell script
 docker-compose up -d
 ```
 
-**Open the dashboard** to check indexing progress
+Open the dashboard to check indexing progress
 ```
 http://localhost:3000
 ``` 
 
-**Open the Lite Explorer** and start exploring :tada:
+Open the Lite Explorer and start exploring :tada:
 ```
 http://localhost:80
 ```
@@ -141,19 +141,19 @@ http://localhost:80
 #### Standalone via docker compose
 The simplest way to run the whole setup is by using the included docker compose
 
-**Copy the config and edit it as needed.** By default, the values for postgres and redis are correct for using with docker compose.
+Copy the config and edit it as needed. By default, the values for postgres and redis are correct for using with docker compose.
 ```shell script
 mkdir -p .volumes/memento
 
 cp config-sample.yml .volumes/memento/config.yml
 ```
 
-**Start everything**
+Start everything
 ```shell script
 docker-compose up -d
 ```
 
-**Open the dashboard to check progress**
+Open the dashboard to check progress
 ```
 http://localhost:3000
 ``` 
@@ -161,19 +161,19 @@ http://localhost:3000
 #### Running with Docker
 If you already have a postgres instance & a redis instance set up and still want the simplest way, you can use the docker image from Dockerhub.
 
-**Copy the config and edit it as needed**, making sure Memento is able to connect to postgres, redis and the Ethereum client of choice.
+Copy the config and edit it as needed, making sure Memento is able to connect to postgres, redis and the Ethereum client of choice.
 ```shell script
 mkdir -p .volumes/memento
 
 cp config-sample.yml .volumes/memento/config.yml
 ```
 
-**Start memento in Docker**
+Start memento in Docker
 ```shell script
 docker run --name memento -d -v /path/to/config/folder:/config/ -p 3000:3000 -p 3001:3001 alethio/memento:latest
 ```
 
-**Open the dashboard to check progress**
+Open the dashboard to check progress
 ```
 http://localhost:3000
 ``` 
