@@ -19,7 +19,7 @@ Easily check the system status, perform various actions and manage your configur
       - [Via dashboard](#via-dashboard)
       - [Via config file / command line arguments](#via-config-file--command-line-arguments)
     - [Running](#running)
-      - [Memento with Lite Explorer](#memento-with-lite-explorerhttpsgithubcomalethioethereum-lite-explorer)
+      - [Memento with Lite Explorer](#memento-with-lite-explorer)
       - [Standalone via docker compose](#standalone-via-docker-compose)
       - [Running with Docker](#running-with-docker)
     - [Building from source](#building-from-source)
