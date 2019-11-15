@@ -4,9 +4,9 @@ Memento is a tool developed by Alethio to scrape and index data from any web3-co
 
 The main goal of the tool is to scrape the raw data from the network, do the necessary transformations and insert it into an indexed database from which it is exposed through the integrated API.
 
-Seamless integration with the [Ethereum Lite Explorer by Alethio](https://github.com/Alethio/ethereum-lite-explorer) is coming soon to provide you the full blockchain exploration capabilities without the need of a third party.
+Seamless integration with the [Ethereum Lite Explorer by Alethio](https://github.com/Alethio/ethereum-lite-explorer) provides you the full blockchain exploration capabilities without the need of a third party.
 
-Easily check the system status, perform various actions and manage your configuration through the built-in dashboard.  
+Easily check the system status, perform various actions and manage your configuration through the built-in dashboard. 
 
 ![memento dashboard](/web/assets/images/preview.png "Memento dashboard")
 
@@ -17,10 +17,11 @@ Easily check the system status, perform various actions and manage your configur
     - [Configuration](#configuration)
       - [Via dashboard](#via-dashboard)
       - [Via config file / command line arguments](#via-config-file--command-line-arguments)
-    - [Installation](#installation)
-      - [Building from source](#building-from-source)
-      - [Running with docker-compose](#running-with-docker-compose)
+    - [Running](#running)
+      - [Memento with Lite Explorer](#memento-with-lite-explorer)
+      - [Standalone via docker compose](#standalone-via-docker-compose)
       - [Running with Docker](#running-with-docker)
+    - [Building from source](#building-from-source)
       - [Example output](#example-output)
       - [Result](#result)
     - [Example setups](#example-setups)
@@ -107,42 +108,36 @@ REDIS_PASSWORD
 PG_PASSWORD
 ```
 
-### Installation
-#### Building from source
-**Prerequisites**
-- a working Golang environment (tested with go v1.12.9)
-    - requires go modules (`>=go v1.11`)
-- Postgres
-- Redis >= 5.0
-- A JSON-RPC enabled and accessible Ethereum Client (Infura also works)
+### Running
 
-**Clone the repo**
+#### Memento with [Lite Explorer](https://github.com/Alethio/ethereum-lite-explorer)
+We've included a [docker-compose](./docker-compose-explorer.yml) that packages a full working environment with Memento and the [Ethereum Lite Explorer by Alethio](https://github.com/Alethio/ethereum-lite-explorer). 
+
+Copy the config and edit it as needed. By default, the values for postgres and redis are correct for using with docker compose.
 ```shell script
-git clone git@github.com:Alethio/memento.git
-cd memento
+mkdir -p .volumes/memento
+mkdir -p .volumes/lite-explorer
+
+cp config-sample.yml .volumes/memento/config.yml
+cp lite-explorer.config.json .volumes/lite-explorer/config.json
 ```
 
-**Build the executable** (it uses go modules, so it will automatically download the dependencies):
+Start everything
 ```shell script
-make
+docker-compose up -d
 ```
 
-**Copy the sample configuration** and do the necessary adjustments
-```shell script
-cp config-sample.yml config.yml
-```
-
-**Start scraping** :tada:
-```shell script
-./memento run --vv
-```
-
-**Open the dashboard to check progress**
+Open the dashboard to check indexing progress
 ```
 http://localhost:3000
 ``` 
 
-#### Running with docker-compose
+Open the Lite Explorer and start exploring :tada:
+```
+http://localhost:80
+```
+
+#### Standalone via docker compose
 The simplest way to run the whole setup is by using the included docker compose
 
 Copy the config and edit it as needed. By default, the values for postgres and redis are correct for using with docker compose.
@@ -178,6 +173,40 @@ docker run --name memento -d -v /path/to/config/folder:/config/ -p 3000:3000 -p 
 ```
 
 Open the dashboard to check progress
+```
+http://localhost:3000
+``` 
+
+### Building from source
+**Prerequisites**
+- a working Golang environment (tested with go v1.12.9)
+    - requires go modules (`>=go v1.11`)
+- Postgres
+- Redis >= 5.0
+- A JSON-RPC enabled and accessible Ethereum Client (Infura also works)
+
+**Clone the repo**
+```shell script
+git clone git@github.com:Alethio/memento.git
+cd memento
+```
+
+**Build the executable** (it uses go modules, so it will automatically download the dependencies):
+```shell script
+make
+```
+
+**Copy the sample configuration** and do the necessary adjustments
+```shell script
+cp config-sample.yml config.yml
+```
+
+**Start scraping** :tada:
+```shell script
+./memento run --vv
+```
+
+**Open the dashboard to check progress**
 ```
 http://localhost:3000
 ``` 
