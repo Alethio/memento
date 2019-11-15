@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+  redis:
+    container_name: memento-redis
+    image: redis:5.0.5-alpine
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - .volumes/redis:/data
+  postgres:
+    container_name: memento-postgres
+    image: postgres:11.5-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=memento
+      - POSTGRES_DB=memento
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - .volumes/postgresql:/var/lib/postgresql/data
+  memento:
+    container_name: memento
+    image: alethio/memento:latest
+    restart: always
+    depends_on:
+      - redis
+      - postgres
+    ports:
+      - 127.0.0.1:3001:3001
+      - 127.0.0.1:3000:3000
+    environment:
+      - PG_PASSWORD=password
+    volumes:
+      - .volumes/memento:/config
+  explorer:
+    container_name: memento-lite-explorer
+    image: alethio/ethereum-lite-explorer:latest
+    restart: always
+    depends_on:
+      - memento
+    ports:
+      - 127.0.0.1:80:80
+    volumes:
+      - .volumes/lite-explorer/config.json:/usr/share/nginx/html/config.json
