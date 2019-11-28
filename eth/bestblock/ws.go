@@ -43,7 +43,7 @@ func (b *Tracker) consumeWSSubscription(blocks chan *types.BlockHeader) {
 			log.WithField("block", newBlockNumber).Trace("got best block")
 
 			best := b.BestBlock()
-			if best > newBlockNumber {
+			if best >= newBlockNumber {
 				// if the new block coming from the node is lower than the current known best
 				// we're most likely dealing with a reorg
 				for i := newBlockNumber; i <= best; i++ {
