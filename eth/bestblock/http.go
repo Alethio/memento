@@ -4,6 +4,7 @@ import "time"
 
 // runHTTP polls the node for the best block number every [config.PollInterval]
 func (b *Tracker) runHTTP() {
+	log.Tracef("tracking best block via HTTP polling, every %s", b.config.PollInterval)
 	for {
 		select {
 		case <-time.Tick(b.config.PollInterval):

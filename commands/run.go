@@ -38,7 +38,7 @@ var runCmd = &cobra.Command{
 			BestBlockTracker: bestblock.Config{
 				NodeURL:      viper.GetString("eth.client.http"),
 				NodeURLWS:    viper.GetString("eth.client.ws"),
-				PollInterval: viper.GetDuration("eth.poll-interval"),
+				PollInterval: viper.GetDuration("eth.client.poll-interval"),
 			},
 			TaskManager: taskmanager.Config{
 				RedisServer:     viper.GetString("redis.server"),

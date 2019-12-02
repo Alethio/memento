@@ -50,14 +50,14 @@ func (b *Tracker) Run() {
 	log.Info("starting best block tracker")
 
 	for {
-		log.Info("setting up websocket connection")
-
 		var conn *ethrpc.ETH
 		var err error
 
 		if b.config.NodeURLWS != "" {
+			log.Info("setting up websocket connection")
 			conn, err = ethrpc.NewWithDefaults(b.config.NodeURLWS)
 		} else {
+			log.Info("setting up best block polling")
 			conn, err = ethrpc.NewWithDefaults(b.config.NodeURL)
 		}
 		if err != nil {
