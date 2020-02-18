@@ -85,6 +85,7 @@ func (a *API) TxLogEntriesHandler(c *gin.Context) {
 		Error(c, err)
 		return
 	}
+	defer rows.Close()
 
 	var logEntries []types.LogEntry
 	for rows.Next() {
@@ -209,6 +210,7 @@ func (a *API) AccountTxsHandler(c *gin.Context) {
 		Error(c, err)
 		return
 	}
+	defer rows.Close()
 
 	var txs = make([]types.Tx, 0)
 	for rows.Next() {
