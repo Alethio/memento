@@ -96,6 +96,7 @@ func (a *API) BlockRangeHandler(c *gin.Context) {
 		Error(c, err)
 		return
 	}
+	defer rows.Close()
 
 	var blockList = make([]map[string]interface{}, 0)
 

@@ -13,6 +13,7 @@ func (a *API) getBlockTxs(number int64) ([]types.Tx, error) {
 		log.Error(err)
 		return nil, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var (
