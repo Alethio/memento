@@ -80,6 +80,7 @@ func (fb *FullBlock) Store(db *sql.DB, m *metrics.Provider) error {
 	for _, s := range fb.storables {
 		err = s.ToDB(tx)
 		if err != nil {
+			tx.Rollback()
 			return err
 		}
 	}
