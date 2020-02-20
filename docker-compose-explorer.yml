@@ -11,8 +11,6 @@ services:
     container_name: memento-postgres
     image: postgres:11.5-alpine
     restart: always
-    ports:
-      - 127.0.0.1:5432:5432
     environment:
       - POSTGRES_USER=memento
       - POSTGRES_DB=memento
