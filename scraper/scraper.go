@@ -1,8 +1,13 @@
 package scraper
 
 import (
+	"sort"
 	"strconv"
+	"sync"
 	"time"
+
+	"github.com/alethio/web3-go/ethrpc/provider/httprpc"
+	"github.com/pkg/errors"
 
 	"github.com/Alethio/memento/data"
 
@@ -24,10 +29,19 @@ type Scraper struct {
 }
 
 func New(config Config) (*Scraper, error) {
-	c, err := ethrpc.NewWithDefaults(config.NodeURL)
+	batchLoader, err := httprpc.NewBatchLoader(0, 4*time.Millisecond)
 	if err != nil {
-		log.Error(err)
-		return nil, err
+		return nil, errors.Wrap(err, "could not init batch loader")
+	}
+
+	provider, err := httprpc.NewWithLoader(config.NodeURL, batchLoader)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not init httprpc provider")
+	}
+	provider.SetHTTPTimeout(5000 * time.Millisecond)
+	c, err := ethrpc.New(provider)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not init ethrpc")
 	}
 
 	return &Scraper{
@@ -58,16 +72,35 @@ func (s *Scraper) Exec(block int64) (*data.FullBlock, error) {
 
 	log.Debug("getting receipts")
 	start = time.Now()
-	for _, tx := range dataBlock.Transactions {
-		dataReceipt, err := s.conn.GetTransactionReceipt(tx.Hash)
-		if err != nil {
-			log.Error(err)
-			return nil, err
-		}
 
-		b.Receipts = append(b.Receipts, dataReceipt)
+	var wg sync.WaitGroup
+	var errs []error
+	var mu sync.Mutex
+	for _, tx := range dataBlock.Transactions {
+		wg.Add(1)
+		txCopy := tx
+
+		go func() {
+			defer wg.Done()
+
+			dataReceipt, err := s.conn.GetTransactionReceipt(txCopy.Hash)
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
+
+			mu.Lock()
+			b.Receipts = append(b.Receipts, dataReceipt)
+			mu.Unlock()
+		}()
 	}
+	wg.Wait()
+	sort.Sort(b.Receipts)
+
 	log.WithField("duration", time.Since(start)).Debugf("got %d receipts", len(b.Receipts))
+	if len(errs) > 0 {
+		return nil, errs[0]
+	}
 
 	if s.config.EnableUncles {
 		log.Debug("getting uncles")

@@ -13,11 +13,11 @@ import (
 func initLogging() {
 	logging := viper.GetString("logging")
 
-	if verbose && logging == "" {
+	if verbose {
 		logging = "*=debug"
 	}
 
-	if vverbose && logging == "" {
+	if vverbose {
 		logging = "*=trace"
 	}
 

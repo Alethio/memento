@@ -2,6 +2,7 @@ package data
 
 import (
 	"database/sql"
+	"strconv"
 
 	"github.com/Alethio/memento/metrics"
 
@@ -15,10 +16,21 @@ var log = logrus.WithField("module", "data")
 
 type FullBlock struct {
 	Block    types.Block
-	Receipts []types.Receipt
+	Receipts Receipts
 	Uncles   []types.Block
 
 	storables []Storable
+}
+
+type Receipts []types.Receipt
+
+func (a Receipts) Len() int      { return len(a) }
+func (a Receipts) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a Receipts) Less(i, j int) bool {
+	iIdx, _ := strconv.ParseInt(a[i].TransactionIndex, 0, 64)
+	jIdx, _ := strconv.ParseInt(a[j].TransactionIndex, 0, 64)
+
+	return iIdx < jIdx
 }
 
 // Storable

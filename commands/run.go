@@ -14,10 +14,11 @@ import (
 
 	"github.com/Alethio/memento/taskmanager"
 
-	"github.com/Alethio/memento/core"
-	"github.com/Alethio/memento/eth/bestblock"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/Alethio/memento/core"
+	"github.com/Alethio/memento/eth/bestblock"
 )
 
 var runCmd = &cobra.Command{
