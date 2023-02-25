@@ -4,7 +4,6 @@ require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/alethio/ethmock v0.0.0-20190820104914-7b8327fb645e // indirect
 	github.com/alethio/web3-go v0.0.6
-	github.com/davecgh/go-spew v1.1.1
 	github.com/elazarl/goproxy v0.0.0-20191011121108-aa519ddbe484 // indirect
 	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-contrib/static v0.0.0-20190913125243-df30d4057ba1
@@ -27,7 +26,7 @@ require (
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/ugorji/go v1.1.7 // indirect
 	golang.org/x/net v0.0.0-20200226121028-0de0cce0169b // indirect
-	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
